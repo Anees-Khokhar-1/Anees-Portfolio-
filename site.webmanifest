@@ -1,0 +1,12 @@
+{
+  "name": "Anees Munir Khokhar | Full-Stack AI Engineer",
+  "short_name": "Anees AI",
+  "description": "Portfolio of Anees Munir Khokhar, Full-Stack AI Engineer.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

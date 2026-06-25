@@ -1,0 +1,25 @@
+# IDEs and Editors
+.vscode/
+.idea/
+.agents/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Node modules (just in case you add a package.json later)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+*.swp
