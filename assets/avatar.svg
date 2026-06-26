@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="50%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="neonBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+    <linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22D3EE" />
+      <stop offset="100%" stop-color="#818CF8" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Circle with Soft Glow -->
+  <circle cx="200" cy="200" r="180" fill="url(#bgGrad)" stroke="url(#neonCyan)" stroke-width="4" />
+  
+  <!-- Grid Lines / AI Circuit Pattern Background inside Circle -->
+  <g opacity="0.15" stroke="#38BDF8" stroke-width="1.5">
+    <line x1="80" y1="120" x2="320" y2="120" />
+    <line x1="60" y1="200" x2="340" y2="200" />
+    <line x1="80" y1="280" x2="320" y2="280" />
+    <line x1="120" y1="80" x2="120" y2="320" />
+    <line x1="200" y1="60" x2="200" y2="340" />
+    <line x1="280" y1="80" x2="280" y2="320" />
+  </g>
+
+  <!-- Floating Neural Nodes -->
+  <circle cx="120" cy="120" r="6" fill="#38BDF8" filter="url(#glow)" />
+  <circle cx="280" cy="120" r="6" fill="#818CF8" filter="url(#glow)" />
+  <circle cx="120" cy="280" r="6" fill="#22D3EE" filter="url(#glow)" />
+  <circle cx="280" cy="280" r="6" fill="#38BDF8" filter="url(#glow)" />
+  
+  <!-- Robot / AI Agent Head -->
+  <!-- Neck / Collar -->
+  <path d="M160 310 L240 310 L260 360 L140 360 Z" fill="#334155" />
+  <path d="M175 310 L225 310 L225 340 L175 340 Z" fill="url(#neonBlue)" opacity="0.8" />
+
+  <!-- Outer Head Shell -->
+  <rect x="110" y="100" width="180" height="190" rx="45" fill="#1E293B" stroke="#475569" stroke-width="4" />
+  
+  <!-- Face Screen (Glossy Dark Glassmorphism) -->
+  <rect x="125" y="120" width="150" height="140" rx="30" fill="#0B0F19" stroke="url(#neonCyan)" stroke-width="3" filter="url(#glow)" />
+
+  <!-- Glowing Eyes (Cybernetic AI Eyes) -->
+  <g fill="url(#neonCyan)" filter="url(#glow)">
+    <rect x="145" y="165" width="40" height="24" rx="12" />
+    <rect x="215" y="165" width="40" height="24" rx="12" />
+  </g>
+  <!-- Eye Inner Highlights -->
+  <circle cx="173" cy="173" r="5" fill="#FFFFFF" />
+  <circle cx="243" cy="173" r="5" fill="#FFFFFF" />
+
+  <!-- Friendly Smile / Voice Waveform -->
+  <path d="M165 220 Q200 240 235 220" fill="none" stroke="#38BDF8" stroke-width="4" stroke-linecap="round" filter="url(#glow)" />
+
+  <!-- Ear Antennas / Holographic Sensors -->
+  <rect x="94" y="170" width="16" height="40" rx="8" fill="url(#neonBlue)" />
+  <rect x="290" y="170" width="16" height="40" rx="8" fill="url(#neonBlue)" />
+  
+  <!-- Top Brain Antenna -->
+  <line x1="200" y1="100" x2="200" y2="65" stroke="url(#neonCyan)" stroke-width="4" stroke-linecap="round" />
+  <circle cx="200" cy="55" r="10" fill="#22D3EE" filter="url(#glow)" />
+
+  <!-- Decorative Circuit Traces on Cheek -->
+  <path d="M135 235 L150 235 L155 245" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" />
+  <path d="M265 235 L250 235 L245 245" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" />
+</svg>
