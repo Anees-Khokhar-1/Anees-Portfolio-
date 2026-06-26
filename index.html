@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anees Munir Khokhar | Full-Stack AI Engineer</title>
+  <meta name="description" content="Anees Munir Khokhar — Full-Stack AI Engineer building production-grade agentic AI systems, RAG pipelines, intelligent APIs, and computer vision products." />
+  <meta name="author" content="Anees Munir Khokhar" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Anees Munir Khokhar | Full-Stack AI Engineer" />
+  <meta property="og:description" content="Full-Stack AI Engineer — Agentic AI, RAG, Computer Vision, Backend APIs" />
+  <meta property="og:image" content="assets/avatar.png" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=6" />
+</head>
+<body>
+
+  <!-- ========== SINGLE-SCREEN DASHBOARD ========== -->
+  <main class="dashboard" id="dashboard">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
+
+    <!-- Centered Background Watermark -->
+    <span class="anees-bg" id="bgWord" aria-hidden="true">ANEES</span>
+
+    <div class="dashboard-container">
+      <div class="hero-stack">
+        <!-- Row 1: Logo -->
+        <div class="logo-card"><span class="logo-shape"></span></div>
+
+        <!-- Row 2: Intro -->
+        <p class="intro">Hey, I'm <strong>Anees</strong> 👋</p>
+
+        <!-- Row 3: Title -->
+        <h1 class="title">AI Engineer</h1>
+
+        <!-- Row 4: Role Pills -->
+        <div class="role-pills" aria-label="Specializations">
+          <span class="role-pill">Full-Stack AI Engineer</span>
+          <span class="role-pill">Agentic AI</span>
+          <span class="role-pill">RAG</span>
+          <span class="role-pill">Computer Vision</span>
+          <span class="role-pill">Backend APIs</span>
+        </div>
+
+        <!-- Row 5: Avatar -->
+        <div class="avatar-wrap">
+          <div class="avatar-orbit"></div>
+          <div class="avatar-glow"></div>
+          <img src="assets/avatar.png" alt="Anees 3D Avatar" />
+        </div>
+
+        <!-- Row 6: Search Bar -->
+        <form class="ask-box" id="askForm" autocomplete="off">
+          <input type="text" id="askInput" placeholder="Ask me anything... (projects, skills, contact, resume)" aria-label="Search portfolio" />
+          <button type="submit" aria-label="Go">➜</button>
+        </form>
+
+        <!-- Row 7: Cards Grid -->
+        <nav class="cards-container">
+          <button class="dash-card" data-modal="me">
+            <span class="dc-icon-badge">👤</span><span class="dc-label">Me</span>
+          </button>
+          <button class="dash-card" data-modal="projects">
+            <span class="dc-icon-badge">💼</span><span class="dc-label">Projects</span>
+          </button>
+          <button class="dash-card" data-modal="skills">
+            <span class="dc-icon-badge">🧠</span><span class="dc-label">Skills</span>
+          </button>
+          <button class="dash-card" data-modal="fun">
+            <span class="dc-icon-badge">✨</span><span class="dc-label">Fun</span>
+          </button>
+          <button class="dash-card" data-modal="contact">
+            <span class="dc-icon-badge">📩</span><span class="dc-label">Contact</span>
+          </button>
+          <button class="dash-card" data-modal="resume">
+            <span class="dc-icon-badge">📄</span><span class="dc-label">Resume</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Dashboard Footer Micro-Line -->
+      <footer class="dash-footer-line">
+        <p>Building agentic AI systems, RAG apps, and intelligent backend APIs.</p>
+      </footer>
+    </div>
+  </main>
+
+  <!-- ========== MODAL OVERLAY (shared) ========== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-shell" id="modalShell">
+      <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL TEMPLATES (hidden) ========== -->
+
+  <!-- ME MODAL -->
+  <template id="tpl-me">
+    <div class="m-section m-me">
+      <h2>About Me</h2>
+
+      <div class="me-top">
+        <div class="me-photo-wrap">
+          <img src="assets/profile.jpg?v=2" alt="Anees Munir Khokhar" class="me-photo" />
+          <div class="me-photo-chips">
+            <span class="profile-chip">Full-Stack AI Engineer</span>
+            <span class="avail-chip"><span class="pulse-dot"></span>Available for AI Projects</span>
+          </div>
+        </div>
+        <div class="me-bio">
+          <p class="me-lead">I'm Anees Munir Khokhar, a Full-Stack AI Engineer based in Islamabad, Pakistan.</p>
+          <p class="me-text">I build production-ready AI systems end to end. My work covers agentic AI architecture, multi-agent workflows, MCP server development, LangGraph orchestration, RAG systems, vector databases, REST APIs, SQL/NoSQL databases, deep learning, and computer vision. I work across the full product lifecycle, from dataset creation and model development to backend APIs, database integration, testing, deployment, and production delivery.</p>
+          <div class="me-actions">
+            <a href="assets/Anees.pdf" class="btn-sm btn-dark" download>Download Resume</a>
+            <a href="https://github.com/Anees-Khokhar-1" target="_blank" rel="noopener noreferrer" class="btn-sm btn-outline">GitHub ↗</a>
+            <a href="https://www.linkedin.com/in/anees-munir-khokhar" target="_blank" rel="noopener noreferrer" class="btn-sm btn-outline">LinkedIn ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Snapshot Stats Row -->
+      <div class="quick-snapshot">
+        <div class="snap-card"><strong>9</strong><span>Projects</span></div>
+        <div class="snap-card"><strong>8</strong><span>Skill Areas</span></div>
+        <div class="snap-card"><strong>2</strong><span>Certifications</span></div>
+        <div class="snap-card"><strong>Techozon</strong><span>Experience</span></div>
+      </div>
+
+      <!-- Why Hire Me Card -->
+      <div class="why-hire-box">
+        <h3>Why Hire Me?</h3>
+        <ul>
+          <li>I build complete AI products, not just prototypes.</li>
+          <li>I combine AI engineering with backend APIs and databases.</li>
+          <li>I focus on production-ready workflows, testing, and deployment.</li>
+        </ul>
+      </div>
+
+      <!-- Certifications -->
+      <h3 class="m-sub">Certifications</h3>
+      <div class="cert-grid">
+        <div class="cert-card">
+          <div class="cert-icon">🎓</div>
+          <div class="cert-info">
+            <strong>AI For Everyone</strong>
+            <span class="cert-org">DeepLearning.AI · Feb 2025</span>
+          </div>
+          <a href="https://www.linkedin.com/in/anees-munir-khokhar/details/certifications/" target="_blank" rel="noopener noreferrer" class="btn-sm btn-outline">Verify ↗</a>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">🎓</div>
+          <div class="cert-info">
+            <strong>Generative AI Fundamentals</strong>
+            <span class="cert-org">IBM · Jan 2025</span>
+          </div>
+          <a href="https://www.linkedin.com/in/anees-munir-khokhar/details/certifications/" target="_blank" rel="noopener noreferrer" class="btn-sm btn-outline">Verify ↗</a>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-chip"><span class="ic-label">Name</span><span class="ic-val">Anees Munir Khokhar</span></div>
+        <div class="info-chip"><span class="ic-label">Role</span><span class="ic-val">Full-Stack AI Engineer</span></div>
+        <div class="info-chip"><span class="ic-label">Location</span><span class="ic-val">Islamabad, Pakistan</span><button type="button" class="copy-sq-btn" data-copy="Islamabad, Pakistan" aria-label="Copy location"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="info-chip"><span class="ic-label">Email</span><a href="mailto:aneesmunir1020@gmail.com" class="ic-val ic-link">aneesmunir1020@gmail.com</a><button type="button" class="copy-sq-btn" data-copy="aneesmunir1020@gmail.com" aria-label="Copy email"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="info-chip"><span class="ic-label">Phone</span><a href="tel:+923459120307" class="ic-val ic-link">+92 345 9120307</a><button type="button" class="copy-sq-btn" data-copy="+92 345 9120307" aria-label="Copy phone"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="info-chip"><span class="ic-label">GitHub</span><a href="https://github.com/Anees-Khokhar-1" target="_blank" rel="noopener noreferrer" class="ic-val ic-link">github.com/Anees-Khokhar-1</a><button type="button" class="copy-sq-btn" data-copy="https://github.com/Anees-Khokhar-1" aria-label="Copy GitHub"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+        <div class="info-chip"><span class="ic-label">LinkedIn</span><a href="https://www.linkedin.com/in/anees-munir-khokhar" target="_blank" rel="noopener noreferrer" class="ic-val ic-link">linkedin.com/in/anees-munir-khokhar</a><button type="button" class="copy-sq-btn" data-copy="https://www.linkedin.com/in/anees-munir-khokhar" aria-label="Copy LinkedIn"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+      </div>
+
+      <h3 class="m-sub">Experience</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-head"><strong>Jr. AI Engineer</strong><span class="tl-date">Mar 2026 – Present</span></div>
+            <p class="tl-company">Techozon Software House</p>
+            <p class="tl-desc">Building LLM applications, AI agents, production agentic systems, REST APIs, databases, vector databases, computer vision datasets, model integration, testing, and deployment.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-head"><strong>AI Engineer Intern</strong><span class="tl-date">Jan 2026 – Feb 2026</span></div>
+            <p class="tl-company">Techozon Software House</p>
+            <p class="tl-desc">Worked across LLMs, machine learning, computer vision, analytics, generative AI, OpenCV, YOLOv11, and production-focused AI systems.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-head"><strong>Assistant Store Manager</strong><span class="tl-date">Mar 2021 – Aug 2023</span></div>
+            <p class="tl-company">Habib Rafiq Pvt. Ltd.</p>
+            <p class="tl-desc">Managed daily operations, supervised 12+ staff members, and improved workflow efficiency.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- PROJECTS MODAL -->
+  <template id="tpl-projects">
+    <div class="m-section m-projects">
+      <h2>Featured Projects</h2>
+      <p class="m-subtitle">AI systems, RAG apps, computer vision tools, scraping workflows, and backend-powered products I have built.</p>
+
+      <div class="proj-grid">
+        <article class="proj-card">
+          <div class="proj-top"><span class="proj-badge badge-rag">⭐ Flagship RAG System</span></div>
+          <h4>Easy-Study — Multi-Model Study Assistant</h4>
+          <p class="proj-desc">A full-stack RAG platform that ingests PDFs, YouTube videos, web articles, and notes, then embeds content using Hugging Face into a local FAISS vector store. It supports runtime switching across Gemini, OpenRouter, Ollama, and OpenAI.</p>
+          <div class="proj-tags"><span>FastAPI</span><span>LangChain</span><span>FAISS</span><span>Hugging Face</span><span>Ollama</span><span>GitHub Actions</span><span>RAG</span><span>Vector Databases</span></div>
+          <a href="https://github.com/Anees-Khokhar-1/Easy-Study" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-top"><span class="proj-badge badge-gen">Generative AI</span></div>
+          <h4>AI Products Description Generator</h4>
+          <p class="proj-desc">An AI content-generation system for producing product descriptions using prompt-driven workflows, backend logic, and reusable generation patterns.</p>
+          <div class="proj-tags"><span>Python</span><span>LLMs</span><span>Prompt Engineering</span></div>
+          <a href="https://github.com/Anees-Khokhar-1/AI-Products-Description-Generator" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-top"><span class="proj-badge badge-cv">Computer Vision</span></div>
+          <h4>Smart Garbage Detection System</h4>
+          <p class="proj-desc">A computer vision system using YOLOv11 for waste classification and smart-city use cases.</p>
+          <div class="proj-tags"><span>YOLOv11</span><span>OpenCV</span><span>Computer Vision</span><span>Dataset Engineering</span></div>
+          <a href="https://github.com/Anees-Khokhar-1/Smart-Garbage-Detection" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-top"><span class="proj-badge badge-llm">LLM Application</span></div>
+          <h4>Tourist LLM</h4>
+          <p class="proj-desc">An LLM-powered travel assistant focused on conversational guidance, retrieval-style responses, and user-facing AI interaction.</p>
+          <div class="proj-tags"><span>LLMs</span><span>Python</span><span>RAG</span></div>
+          <a href="https://github.com/Anees-Khokhar-1/Tourist-llm-" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-top"><span class="proj-badge badge-chat">Conversational AI</span></div>
+          <h4>ConVochaT</h4>
+          <p class="proj-desc">A conversational AI application demonstrating chat product design, model integration, and end-to-end AI feature delivery.</p>
+          <div class="proj-tags"><span>AI Chat</span><span>Python</span><span>LLMs</span></div>
+          <a href="https://github.com/Anees-Khokhar-1/ConVochaT" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-top"><span class="proj-badge badge-data">Data Engineering</span></div>
+          <h4>Headout XHR Scraping</h4>
+          <p class="proj-desc">A data extraction project built around XHR request analysis, structured scraping, and clean data collection workflows.</p>
+          <div class="proj-tags"><span>Web Scraping</span><span>XHR</span><span>Data Engineering</span></div>
+          <a href="https://github.com/Anees-Khokhar-1/Headout_XHR-Scrapping-" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-top"><span class="proj-badge badge-fs">Full Stack / CRUD</span></div>
+          <h4>Personal Expense Tracker</h4>
+          <p class="proj-desc">A full-stack CRUD-style expense tracking application for managing records and tracking expenses.</p>
+          <div class="proj-tags"><span>Full Stack</span><span>CRUD</span><span>Database</span></div>
+          <a href="https://github.com/Anees-Khokhar-1/Personal-Expense-Tracker" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-top"><span class="proj-badge badge-gen">AI Productivity</span></div>
+          <h4>AI Study Assistant</h4>
+          <p class="proj-desc">An AI assistant project focused on learning support, question answering, and student productivity workflows.</p>
+          <div class="proj-tags"><span>AI Assistant</span><span>Python</span><span>LLMs</span></div>
+          <a href="https://github.com/Anees-Khokhar-1/ai-study-assistant" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-top"><span class="proj-badge badge-dl">Deep Learning</span></div>
+          <h4>Fruit Classification System</h4>
+          <p class="proj-desc">A CNN-based image classification project covering dataset preprocessing, training, validation, and model evaluation.</p>
+          <div class="proj-tags"><span>TensorFlow</span><span>Keras</span><span>CNN</span></div>
+          <a href="https://github.com/Anees-Khokhar-1/fruitclassification" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+        </article>
+      </div>
+    </div>
+  </template>
+
+  <!-- SKILLS MODAL -->
+  <template id="tpl-skills">
+    <div class="m-section m-skills">
+      <h2>Technical Skills</h2>
+      <p class="m-subtitle">A focused overview of the AI, backend, computer vision, data, and development tools I use to build production-ready AI systems.</p>
+
+      <div class="sk-grid">
+        <div class="sk-card">
+          <div class="sk-head"><span class="sk-emoji">🧠</span><h4>Agentic AI & Orchestration</h4><span class="sk-tag tag-core">Core</span></div>
+          <div class="sk-tags"><span>Multi-Agent Workflows</span><span>Agentic AI Architecture</span><span>Layered Agent Systems</span><span>LangGraph Orchestration</span><span>CrewAI</span><span>OpenClaw</span><span>AI Agents</span><span>Agent Tool Integration</span><span>MCP Server Development</span></div>
+        </div>
+        <div class="sk-card">
+          <div class="sk-head"><span class="sk-emoji">🤖</span><h4>Generative AI & LLMs</h4><span class="sk-tag tag-core">Core</span></div>
+          <div class="sk-tags"><span>LLM Applications</span><span>RAG</span><span>Prompt Engineering</span><span>Fine-Tuning</span><span>Hugging Face Transformers</span><span>Gemini</span><span>OpenRouter</span><span>Ollama</span><span>OpenAI</span><span>DeepSeek-style Model Routing</span><span>Multi-provider LLM Workflows</span></div>
+        </div>
+        <div class="sk-card">
+          <div class="sk-head"><span class="sk-emoji">🔬</span><h4>Deep Learning</h4><span class="sk-tag tag-practical">Practical</span></div>
+          <div class="sk-tags"><span>ANN</span><span>CNN</span><span>RNN</span><span>Transformers</span><span>PyTorch</span><span>TensorFlow</span><span>Keras</span><span>Model Training</span><span>Model Evaluation</span><span>Dataset Preprocessing</span></div>
+        </div>
+        <div class="sk-card">
+          <div class="sk-head"><span class="sk-emoji">👁️</span><h4>Computer Vision</h4><span class="sk-tag tag-practical">Practical</span></div>
+          <div class="sk-tags"><span>YOLOv11</span><span>OpenCV</span><span>MediaPipe</span><span>Real-time Inference</span><span>Image Classification</span><span>Object Detection</span><span>CV Dataset Creation</span><span>Dataset Curation</span><span>Dataset Preprocessing</span></div>
+        </div>
+        <div class="sk-card">
+          <div class="sk-head"><span class="sk-emoji">⚙️</span><h4>Backend & APIs</h4><span class="sk-tag tag-prod">Production</span></div>
+          <div class="sk-tags"><span>REST APIs</span><span>GET / POST / PUT / PATCH / DELETE</span><span>CRUD Design</span><span>FastAPI</span><span>Flask</span><span>API Integration</span><span>Backend Architecture</span><span>Full-Stack Development</span><span>End-to-End AI Dev</span></div>
+        </div>
+        <div class="sk-card">
+          <div class="sk-head"><span class="sk-emoji">🗄️</span><h4>Databases & Retrieval</h4><span class="sk-tag tag-exp">Experienced</span></div>
+          <div class="sk-tags"><span>PostgreSQL</span><span>MongoDB</span><span>SQL</span><span>NoSQL</span><span>SQLite</span><span>FAISS</span><span>Vector Databases</span><span>Semantic Search</span><span>Embedding Pipelines</span></div>
+        </div>
+        <div class="sk-card">
+          <div class="sk-head"><span class="sk-emoji">📊</span><h4>Data Engineering</h4><span class="sk-tag tag-exp">Experienced</span></div>
+          <div class="sk-tags"><span>Dataset Creation</span><span>Dataset Cleaning</span><span>Web Scraping</span><span>XHR Scraping</span><span>Pandas</span><span>Data Preprocessing</span><span>Structured Data Collection</span></div>
+        </div>
+        <div class="sk-card">
+          <div class="sk-head"><span class="sk-emoji">🛠️</span><h4>DevOps & Quality</h4><span class="sk-tag tag-exp">Experienced</span></div>
+          <div class="sk-tags"><span>Git</span><span>GitHub Actions</span><span>CI/CD</span><span>pytest</span><span>mypy</span><span>Bandit</span><span>Pylint</span><span>Testing</span><span>Deployment</span><span>Security Checks</span></div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- FUN MODAL -->
+  <template id="tpl-fun">
+    <div class="m-section m-fun">
+      <h2>Fun & Hobbies</h2>
+      <p class="m-subtitle">A little more about me beyond code — the things I enjoy, the habits that keep me creative, and the moments that make life meaningful.</p>
+
+      <div class="hobby-grid">
+        <div class="hobby-card"><div class="hc-icon bg-badminton">🏸</div><h4>Badminton</h4><p>I enjoy playing badminton because it keeps me active, focused, and refreshed.</p></div>
+        <div class="hobby-card"><div class="hc-icon bg-gardening">🌱</div><h4>Gardening</h4><p>Gardening helps me slow down, stay patient, and enjoy small daily progress.</p></div>
+        <div class="hobby-card"><div class="hc-icon bg-reading">📚</div><h4>Reading Articles</h4><p>I enjoy reading articles about technology, AI, software development, productivity, and real-world innovation.</p></div>
+        <div class="hobby-card"><div class="hc-icon bg-coding">💻</div><h4>Coding</h4><p>Coding is not only my profession but also one of my favorite hobbies.</p></div>
+        <div class="hobby-card"><div class="hc-icon bg-cooking">🍳</div><h4>Cooking</h4><p>I enjoy cooking because it gives me a creative break from screens.</p></div>
+        <div class="hobby-card"><div class="hc-icon bg-reels">🎬</div><h4>Watching Reels</h4><p>I like watching reels for quick entertainment, creative ideas, tech updates, and relaxation.</p></div>
+        <div class="hobby-card"><div class="hc-icon bg-ainews">🤖</div><h4>Exploring AI News</h4><p>I love following new AI model launches, tools, and updates. I enjoy researching why new models are built, what problems they solve, and how they can be used in real-world applications.</p></div>
+        <div class="hobby-card"><div class="hc-icon bg-family">❤️</div><h4>Family Conversations</h4><p>One of my most meaningful habits is talking with my mother about my day, life, ideas, and goals.</p></div>
+        <div class="hobby-card"><div class="hc-icon bg-hiking">🏔️</div><h4>Traveling & Hiking</h4><p>Traveling and hiking are among my most important hobbies. I enjoy exploring new places, experiencing nature, and taking peaceful breaks that refresh my mind and creativity.</p></div>
+      </div>
+    </div>
+  </template>
+
+  <!-- CONTACT MODAL -->
+  <template id="tpl-contact">
+    <div class="m-section m-contact">
+      <h2>Let's Connect</h2>
+      <p class="m-subtitle">Have an AI idea, project, or collaboration in mind? I'd love to connect.</p>
+
+      <div class="saas-ct-grid">
+        <!-- 1. Email -->
+        <div class="saas-ct-card">
+          <div class="saas-ct-left">
+            <div class="saas-icon-box"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
+            <div class="saas-txt">
+              <span class="saas-label">EMAIL</span>
+              <span class="contact-value">aneesmunir1020@gmail.com</span>
+            </div>
+          </div>
+          <div class="saas-actions-right">
+            <button type="button" class="action-icon-btn" data-copy="aneesmunir1020@gmail.com" aria-label="Copy email"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+            <a href="mailto:aneesmunir1020@gmail.com" class="action-icon-btn" aria-label="Open email"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+          </div>
+        </div>
+
+        <!-- 2. Phone -->
+        <div class="saas-ct-card">
+          <div class="saas-ct-left">
+            <div class="saas-icon-box"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+            <div class="saas-txt">
+              <span class="saas-label">PHONE</span>
+              <span class="contact-value">+92 345 9120307</span>
+            </div>
+          </div>
+          <div class="saas-actions-right">
+            <button type="button" class="action-icon-btn" data-copy="+92 345 9120307" aria-label="Copy phone"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+            <a href="tel:+923459120307" class="action-icon-btn" aria-label="Call phone"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+          </div>
+        </div>
+
+        <!-- 3. Location -->
+        <div class="saas-ct-card saas-ct-full">
+          <div class="saas-ct-left">
+            <div class="saas-icon-box"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div class="saas-txt">
+              <span class="saas-label">LOCATION</span>
+              <span class="contact-value">Islamabad, Pakistan</span>
+            </div>
+          </div>
+          <div class="saas-actions-right">
+            <button type="button" class="action-icon-btn" data-copy="Islamabad, Pakistan" aria-label="Copy location"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+          </div>
+        </div>
+
+        <!-- 4. GitHub -->
+        <div class="saas-ct-card">
+          <div class="saas-ct-left">
+            <div class="saas-icon-box"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></div>
+            <div class="saas-txt">
+              <span class="saas-label">GITHUB</span>
+              <span class="contact-value">github.com/Anees-Khokhar-1</span>
+            </div>
+          </div>
+          <div class="saas-actions-right">
+            <button type="button" class="action-icon-btn" data-copy="https://github.com/Anees-Khokhar-1" aria-label="Copy GitHub"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+            <a href="https://github.com/Anees-Khokhar-1" target="_blank" rel="noopener noreferrer" class="action-icon-btn" aria-label="Open GitHub"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+          </div>
+        </div>
+
+        <!-- 5. LinkedIn -->
+        <div class="saas-ct-card">
+          <div class="saas-ct-left">
+            <div class="saas-icon-box"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></div>
+            <div class="saas-txt">
+              <span class="saas-label">LINKEDIN</span>
+              <span class="contact-value">linkedin.com/in/anees-munir-khokhar</span>
+            </div>
+          </div>
+          <div class="saas-actions-right">
+            <button type="button" class="action-icon-btn" data-copy="https://www.linkedin.com/in/anees-munir-khokhar" aria-label="Copy LinkedIn"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+            <a href="https://www.linkedin.com/in/anees-munir-khokhar" target="_blank" rel="noopener noreferrer" class="action-icon-btn" aria-label="Open LinkedIn"><svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- RESUME MODAL -->
+  <template id="tpl-resume">
+    <div class="m-section m-resume">
+      <h2>Resume</h2>
+      <p class="m-subtitle">View or download my latest resume.</p>
+
+      <div class="resume-preview-wrap">
+        <iframe src="assets/Anees.pdf" class="resume-frame">
+          <p>Your browser cannot preview this PDF. <a href="assets/Anees.pdf" download>Download the PDF</a>.</p>
+        </iframe>
+      </div>
+
+      <div class="resume-actions">
+        <a href="assets/Anees.pdf" download="Anees_Munir_Khokhar_Resume.pdf" class="btn-primary">⬇ Download Resume</a>
+        <a href="assets/Anees.pdf" target="_blank" rel="noopener noreferrer" class="btn-sec">↗ Open in New Tab</a>
+      </div>
+      <p class="resume-note">For the best viewing experience, open the resume in a new tab or download it.</p>
+    </div>
+  </template>
+
+  <script src="script.js?v=6" defer></script>
+</body>
+</html>
