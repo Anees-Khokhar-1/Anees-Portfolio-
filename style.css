@@ -664,70 +664,120 @@ button:focus-visible, a:focus-visible, input:focus-visible, .dash-card:focus-vis
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes avatarFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
 
-/* ── Responsive: Short viewport (laptops, 768px-tall screens) ─────────── */
-@media(max-height:750px){
-  .logo-card{width:40px;height:40px;margin-bottom:18px;border-radius:12px;}
-  .logo-shape{width:18px;height:18px;}
-  .intro{font-size:.92rem;margin-bottom:10px;}
-  .title{font-size:clamp(46px,6.5vw,68px);margin-bottom:14px;}
-  .role-strip{margin-bottom:18px;font-size:13.5px;}
-  .avatar-wrap{width:clamp(110px,17vh,140px);height:clamp(110px,17vh,140px);margin-top:0;margin-bottom:18px;}
-  .ask-box{margin-bottom:22px;padding:4px;height:46px;}
-  .ask-box input{font-size:.88rem;}
-  .ask-box button{width:36px;height:36px;font-size:1rem;}
-  .card-grid{gap:12px;}
-  .dash-card{min-height:76px;padding:8px 4px;gap:6px;border-radius:18px;}
-  .dc-icon-badge{width:32px;height:32px;font-size:1.15rem;border-radius:10px;}
-  .dc-label{font-size:.8rem;}
+/* ── Responsive: Ultra-Wide / Large Desktop Screens (1400px+) ───────────── */
+@media (min-width: 1400px) {
+  .dashboard-container { max-width: 940px; }
+  .title { font-size: clamp(64px, 6vw, 88px); }
+  .cards-container { max-width: 720px; gap: 16px; }
+  .dash-card { min-height: 96px; }
 }
 
-/* ── Responsive: Small screen wrapping ──────────────────────────────────── */
-@media (max-width: 768px) {
-  .role-pills {
-    flex-wrap: wrap;
-    white-space: normal;
-    gap: 8px;
-  }
+/* ── Responsive: Short Viewport (Laptops, 13" MacBooks, 768px tall) ─────── */
+@media (max-height: 750px) {
+  body { overflow-y: auto; overflow-x: hidden; }
+  .dashboard { height: auto; min-height: 100vh; overflow-y: auto; padding: 16px 0; }
+  .logo-card { width: 38px; height: 38px; margin-bottom: 10px; border-radius: 12px; }
+  .logo-shape { width: 16px; height: 16px; }
+  .intro { font-size: .88rem; margin-bottom: 6px; }
+  .title { font-size: clamp(38px, 5.5vw, 56px); margin-bottom: 10px; }
+  .role-strip { margin-bottom: 12px; font-size: 12.5px; }
+  .avatar-wrap { width: clamp(95px, 15vh, 120px); height: clamp(95px, 15vh, 120px); margin-top: 0; margin-bottom: 12px; }
+  .ask-box { margin-bottom: 14px; padding: 4px; height: 44px; }
+  .ask-box input { font-size: .88rem; }
+  .ask-box button { width: 36px; height: 36px; font-size: 1rem; }
+  .card-grid { gap: 10px; }
+  .dash-card { min-height: 70px; padding: 8px 4px; gap: 6px; border-radius: 14px; }
+  .dc-icon-badge { width: 30px; height: 30px; font-size: 1.1rem; border-radius: 8px; }
+  .dc-label { font-size: .78rem; }
 }
 
-/* ── Responsive: Medium width (Tablet) ──────────────────────────────────── */
-@media(max-width: 900px){
-  .cards-container { grid-template-columns: repeat(3, 1fr); max-width: 480px; }
-  .me-top { flex-direction: column; align-items: center; }
+/* ── Responsive: Tablets & iPad Pro Landscape (max-width: 1024px) ───────── */
+@media (max-width: 1024px) {
+  .cards-container { max-width: 580px; }
+  .dash-card { min-height: 84px; }
+}
+
+/* ── Responsive: Tablets & iPad Portrait (max-width: 900px) ─────────────── */
+@media (max-width: 900px) {
+  body { overflow-y: auto; overflow-x: hidden; }
+  .dashboard { height: auto; min-height: 100vh; overflow-y: auto; padding: 24px 0; }
+  .cards-container { grid-template-columns: repeat(3, 1fr); max-width: 520px; gap: 12px; }
+  .role-pills { flex-wrap: wrap; white-space: normal; gap: 8px; justify-content: center; }
+  .me-top { flex-direction: column; align-items: center; text-align: center; }
   .me-bio { text-align: center; }
   .me-actions { justify-content: center; }
-  .modal-body { padding: 32px 24px 40px; }
+  .modal-body { padding: 28px 22px 36px; }
 }
 
-/* ── Responsive: Mobile ─────────────────────────────────────────────────── */
-@media(max-width: 600px){
-  body { overflow-x: hidden; }
-  .dashboard { height: auto; min-height: 100vh; min-height: 100dvh; padding: 24px 0 32px; }
-  .dashboard-container { padding: 0 16px; }
-  .title { font-size: clamp(46px, 12vw, 62px); }
-  .avatar-wrap { width: clamp(130px, 36vw, 170px); height: clamp(130px, 36vw, 170px); }
-  .ask-box { padding: 5px; height: 50px; }
-  .ask-box input { font-size: .9rem; padding: 0 16px; }
-  .ask-box button { width: 40px; height: 40px; font-size: 1.1rem; }
-  .cards-container { grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 320px; }
-  .dash-card { min-height: 84px; padding: 10px 4px; border-radius: 16px; }
-  .dc-icon-badge { width: 36px; height: 36px; font-size: 1.3rem; border-radius: 12px; }
-  .dc-label { font-size: .82rem; }
-  .anees-bg { font-size: clamp(80px, 22vw, 140px); }
-
+/* ── Responsive: Android & iOS Mobile Devices (max-width: 600px) ────────── */
+@media (max-width: 600px) {
+  html, body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.modal-open { overflow: hidden !important; }
+  
+  .dashboard {
+    height: auto !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-y: visible !important;
+    display: block !important;
+  }
+  
+  .dashboard-container {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start !important;
+    padding-top: max(20px, env(safe-area-inset-top)) !important;
+    padding-bottom: max(36px, env(safe-area-inset-bottom)) !important;
+    padding-left: max(14px, env(safe-area-inset-left)) !important;
+    padding-right: max(14px, env(safe-area-inset-right)) !important;
+  }
+  
+  .logo-card { width: 38px; height: 38px; margin-bottom: 10px; border-radius: 10px; }
+  .intro { font-size: 0.84rem; margin-bottom: 4px; }
+  .title { font-size: clamp(34px, 9.5vw, 44px); margin-bottom: 8px; }
+  .role-strip { margin-bottom: 10px; gap: 6px; }
+  .role-pill { padding: 4px 10px; font-size: 11.5px; }
+  
+  .avatar-wrap { width: clamp(100px, 28vw, 120px); height: clamp(100px, 28vw, 120px); margin-bottom: 12px; }
+  
+  /* Prevent iOS Safari auto-zoom on input tap by enforcing font-size >= 16px */
+  .ask-box { padding: 4px; height: 46px; border-radius: 99px; margin-bottom: 14px; width: 100%; max-width: 340px; }
+  .ask-box input { font-size: 16px !important; padding: 0 14px; }
+  .ask-box button { width: 38px; height: 38px; font-size: 1.05rem; flex-shrink: 0; }
+  
+  .cards-container { grid-template-columns: repeat(2, 1fr); gap: 8px; max-width: 340px; width: 100%; }
+  .dash-card { min-height: 70px; padding: 10px 4px; border-radius: 14px; gap: 5px; }
+  .dc-icon-badge { width: 32px; height: 32px; font-size: 1.2rem; border-radius: 8px; }
+  .dc-label { font-size: .8rem; }
+  .anees-bg { font-size: clamp(60px, 17vw, 100px); }
+  
+  /* Modal optimization for mobile phones */
   .modal-shell { width: 100%; max-width: 100%; max-height: 100vh; max-height: 100dvh; border-radius: 0; }
-  .modal-body { padding: 24px 16px 32px; }
-
-  .me-photo-wrap { width: 150px; }
-  .me-photo { height: 190px; }
-
-  .proj-grid, .sk-grid, .hobby-grid, .ct-grid, .info-grid, .saas-ct-grid, .cert-grid { grid-template-columns: 1fr; }
-  .quick-snapshot { grid-template-columns: repeat(2, 1fr); }
+  .modal-body { padding: 24px 16px max(32px, env(safe-area-inset-bottom)); }
+  
+  .me-photo-wrap { width: 135px; margin: 0 auto 14px; }
+  .me-photo { height: 170px; }
+  
+  /* Apple iOS / Android touch target sizes (min 44x44px) */
+  .btn-sm, .action-icon-btn, .copy-sq-btn { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+  
+  .proj-grid, .sk-grid, .hobby-grid, .ct-grid, .info-grid, .saas-ct-grid, .cert-grid { grid-template-columns: 1fr; gap: 12px; }
+  .quick-snapshot { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .saas-ct-full { grid-column: span 1; }
 }
 
-@media(max-width: 380px){
-  .cards-container { grid-template-columns: repeat(2, 1fr); gap: 8px; max-width: 280px; }
-  .dash-card { min-height: 74px; padding: 8px 2px; }
-  .title { font-size: 38px; }
+/* ── Responsive: Small Foldables & Compact Mobile (max-width: 380px) ────── */
+@media (max-width: 380px) {
+  .cards-container { grid-template-columns: repeat(2, 1fr); gap: 6px; max-width: 290px; }
+  .dash-card { min-height: 64px; padding: 6px 3px; }
+  .dc-icon-badge { width: 28px; height: 28px; font-size: 1.1rem; }
+  .title { font-size: 30px; }
+  .role-pill { padding: 4px 8px; font-size: 11px; }
 }
