@@ -7,8 +7,18 @@ import os
 import sys
 from pathlib import Path
 
-# Silence tokenizer parallelism warning & force PyTorch CPU execution
+# Silence tokenizer parallelism warning
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+# ZeroGPU mandatory startup check - MUST BE DEFINED & EXECUTED BEFORE PyTorch RAG imports
+try:
+    import spaces
+    @spaces.GPU(duration=1)
+    def hf_zerogpu_startup():
+        return "ZeroGPU Ready"
+    hf_zerogpu_startup()
+except Exception as err:
+    print(f"[ZeroGPU Note]: {err}")
 
 import uvicorn
 from fastapi.staticfiles import StaticFiles
