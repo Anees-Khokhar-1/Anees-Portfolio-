@@ -6,21 +6,13 @@ Unified FastAPI application serving static portfolio frontend and dynamic RAG ba
 import os
 import sys
 from pathlib import Path
+
+# Silence tokenizer parallelism warning & force PyTorch CPU execution
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 import uvicorn
 from fastapi.staticfiles import StaticFiles
 import gradio as gr
-
-# ZeroGPU Active Initialization Call
-try:
-    import spaces
-    @spaces.GPU(duration=1)
-    def hf_zerogpu_keeper():
-        return "ZeroGPU Active"
-    
-    # Execute immediately on module load so Hugging Face detects GPU initialization
-    hf_zerogpu_keeper()
-except Exception as err:
-    print(f"[ZeroGPU Init Note]: {err}")
 
 # Add project root directory to python path
 ROOT_DIR = Path(__file__).parent
