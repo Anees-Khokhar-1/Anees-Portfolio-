@@ -10,6 +10,15 @@ import uvicorn
 from fastapi.staticfiles import StaticFiles
 import gradio as gr
 
+# ZeroGPU Compatibility Check
+try:
+    import spaces
+    @spaces.GPU(duration=1)
+    def hf_zerogpu_keeper():
+        return "GPU Active"
+except Exception:
+    pass
+
 # Add project root directory to python path
 ROOT_DIR = Path(__file__).parent
 sys.path.insert(0, str(ROOT_DIR))
