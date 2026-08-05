@@ -22,12 +22,10 @@ assets_dir = ROOT_DIR / "assets"
 if assets_dir.exists():
     app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
 
-# Mount a lightweight Gradio interface wrapper for Hugging Face Space health compatibility
-with gr.Blocks(title="Anees AI Digital Twin") as demo:
-    gr.Markdown("# ⚡ Anees AI Digital Twin & Portfolio")
-    gr.HTML("<script>window.location.href = '/';</script>")
+with gr.Blocks(title="Anees AI Digital Twin Portfolio", css="footer {visibility: hidden}") as demo:
+    gr.HTML("<iframe src='/index.html' style='width:100%; height:95vh; border:none; border-radius:12px;'></iframe>")
 
-# Combine FastAPI and Gradio
+# Mount Gradio into FastAPI app
 app = gr.mount_gradio_app(app, demo, path="/gradio")
 
 if __name__ == "__main__":
