@@ -10,14 +10,17 @@ import uvicorn
 from fastapi.staticfiles import StaticFiles
 import gradio as gr
 
-# ZeroGPU Compatibility Check
+# ZeroGPU Active Initialization Call
 try:
     import spaces
     @spaces.GPU(duration=1)
     def hf_zerogpu_keeper():
-        return "GPU Active"
-except Exception:
-    pass
+        return "ZeroGPU Active"
+    
+    # Execute immediately on module load so Hugging Face detects GPU initialization
+    hf_zerogpu_keeper()
+except Exception as err:
+    print(f"[ZeroGPU Init Note]: {err}")
 
 # Add project root directory to python path
 ROOT_DIR = Path(__file__).parent
