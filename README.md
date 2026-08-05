@@ -3,8 +3,9 @@ title: Anees AI Digital Twin Portfolio
 emoji: ⚡
 colorFrom: blue
 colorTo: purple
-sdk: docker
-app_port: 7860
+sdk: gradio
+sdk_version: 4.36.0
+app_file: app.py
 pinned: false
 license: mit
 ---

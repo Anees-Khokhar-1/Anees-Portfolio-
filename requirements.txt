@@ -8,3 +8,4 @@ scikit-learn>=1.4.0
 numpy>=1.26.0
 faiss-cpu>=1.7.4
 sentence-transformers>=2.7.0
+gradio>=4.36.0
