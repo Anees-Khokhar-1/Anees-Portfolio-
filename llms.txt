@@ -1,0 +1,32 @@
+# Anees Munir Khokhar — AI Engineer Profile
+
+> AI Engineer based in Islamabad, Pakistan, specializing in production-grade Agentic AI systems, Retrieval-Augmented Generation (RAG) pipelines, computer vision systems, and microservice APIs.
+
+## Core Specializations
+- **Agentic AI & Orchestration:** Multi-Agent Workflows, LangGraph, CrewAI, MCP Server Development, Autonomous Agents.
+- **RAG & Vector Retrieval:** Hybrid Retrieval (FAISS, Scikit-Learn TF-IDF), Document Ingestion (PDF, YouTube, Web), LangChain, Embedding Pipelines.
+- **Generative AI & LLMs:** Llama-3.3, Groq Cloud API, OpenAI API, Gemini, DeepSeek, Ollama local model routing, Prompt Engineering, Fine-Tuning.
+- **Computer Vision & Deep Learning:** YOLOv11, OpenCV, MediaPipe, Object Detection, Image Classification, PyTorch, TensorFlow, Keras.
+- **Backend & MLOps:** FastAPI, REST APIs, PostgreSQL, MongoDB, Docker, GitHub Actions CI/CD, Pytest regression testing.
+
+## Key Flagship Projects
+- **Easy-Study:** Multi-Model Study Assistant & RAG Platform (FastAPI + LangChain + FAISS + Multi-LLM Routing). URL: https://github.com/Anees-Khokhar-1/Easy-Study
+- **Smart Garbage Detection System:** Real-Time YOLOv11 computer vision waste classification system. URL: https://github.com/Anees-Khokhar-1/Smart-Garbage-Detection
+- **AI Products Description Generator:** Generative AI e-commerce description generator. URL: https://github.com/Anees-Khokhar-1/AI-Products-Description-Generator
+- **Tourist LLM:** Conversational RAG travel planning assistant. URL: https://github.com/Anees-Khokhar-1/Tourist-llm-
+- **ConVochaT:** Multi-model AI Chat platform. URL: https://github.com/Anees-Khokhar-1/ConVochaT
+
+## Professional Experience
+- **Jr. AI Engineer** at Techozon Software House (Mar 2026 – Present)
+- **AI Engineer Intern** at Techozon Software House (Jan 2026 – Feb 2026)
+
+## Education & Certifications
+- **Degree:** BS Artificial Intelligence (BS AI) — University of Azad Jammu and Kashmir (UAJK)
+- **Certifications:** DeepLearning.AI "AI For Everyone" (2025), IBM "Generative AI Fundamentals" (2025)
+
+## Contact Information
+- **Website:** https://aneesportfolio.com
+- **Email:** aneesmunir1020@gmail.com
+- **Phone:** +92 345 9120307
+- **GitHub:** https://github.com/Anees-Khokhar-1
+- **LinkedIn:** https://www.linkedin.com/in/anees-munir-khokhar

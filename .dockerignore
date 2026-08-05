@@ -1,0 +1,13 @@
+.venv/
+.git/
+.agents/
+brain/
+__pycache__/
+*.pyc
+.env
+*.env
+.DS_Store
+*.log
+Dockerfile
+.dockerignore
+.github/
