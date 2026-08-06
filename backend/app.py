@@ -66,6 +66,22 @@ app.add_middleware(
 # Compress responses > 500 bytes (reduces latency on slow connections)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
+# Security Bot Shield & Static Asset Cache-Control Middleware
+@app.middleware("http")
+async def bot_shield_and_caching_middleware(request: Request, call_next):
+    path = request.url.path.lower()
+    # Intercept bot scanner probes (.env, secrets.toml, path traversal ..) and return 404 cleanly
+    forbidden_substrings = [".env", "secrets.toml", "..", "/file=", "/etc/passwd"]
+    if any(sub in path for sub in forbidden_substrings):
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"detail": "Not Found"})
+    
+    response = await call_next(request)
+    
+    # Add Cache-Control headers to static assets for optimized 304 browser caching
+    if path.endswith((".js", ".css", ".png", ".jpg", ".jpeg", ".svg", ".pdf", ".ico")):
+        response.headers["Cache-Control"] = "public, max-age=86400, must-revalidate"
+    return response
+
 # ── Load Knowledge Base & Initialize RAG Engine ──────────────────────────────
 KNOWLEDGE_PATH = Path(__file__).parent / "knowledge.json"
 try:
@@ -338,6 +354,31 @@ def get_favicon():
     if favicon_path.exists():
         return FileResponse(favicon_path, media_type="image/svg+xml")
     return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
+
+@app.get("/api/config")
+def api_config_endpoint():
+    """Gradio / client space configuration probe endpoint."""
+    return {
+        "status": "online",
+        "service": "Anees AI Digital Twin API",
+        "version": "2.2.0-rag-shield",
+        "rag_engine": "active",
+        "security": "3-Layer Defense-in-Depth Active"
+    }
+
+@app.get("/api/predict", include_in_schema=False)
+@app.post("/api/predict")
+async def predict_compatibility_endpoint(raw_request: Request):
+    """Gradio client predict endpoint mapping for compatibility."""
+    try:
+        body = await raw_request.json()
+        data = body.get("data", [])
+        user_msg = data[0] if data and isinstance(data, list) else body.get("message", "Hello")
+    except Exception:
+        user_msg = "Hello"
+    
+    chat_req = ChatRequest(message=str(user_msg))
+    return await chat_endpoint(chat_req, raw_request)
 
 # ── Module-Level Security & Fallback Configuration Constants ─────────────────
 UNAUTHORIZED_OUTPUT_PHRASES = [

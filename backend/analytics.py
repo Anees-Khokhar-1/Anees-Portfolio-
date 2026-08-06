@@ -9,9 +9,11 @@ logger = logging.getLogger("ai_digital_twin.analytics")
 DB_PATH = Path(__file__).parent / "recruiter_queries.db"
 
 def _get_conn() -> sqlite3.Connection:
-    """Initialize SQLite tables with strict schema and privacy indexes."""
-    conn = sqlite3.connect(str(DB_PATH))
+    """Initialize SQLite tables with strict schema, WAL concurrency mode, and privacy indexes."""
+    conn = sqlite3.connect(str(DB_PATH), timeout=10.0)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode=WAL;")
+    conn.execute("PRAGMA busy_timeout=10000;")
     conn.execute("""
         CREATE TABLE IF NOT EXISTS queries (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
