@@ -94,20 +94,99 @@ function initAskRouting() {
 
 /* ── 3. CLOSE MODAL LOGIC & GLOBAL DELEGATION ────────────────────────────── */
 function initModalClose() {
-  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (closeBtn) closeBtn.addEventListener('click', () => closeModal(true));
 
   if (overlay) {
     overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) closeModal();
+      if (e.target === overlay) closeModal(true);
     });
   }
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && overlay && overlay.classList.contains('open')) {
-      closeModal();
+      closeModal(true);
     }
   });
+
+  initDeepLinkRouting();
 }
+
+/* ── UNIVERSAL HISTORY & MODAL NAVIGATION CONTROLLER ──────────────────── */
+let isModalHistoryActive = false;
+
+function openModal(id, pushHistory = true) {
+  const tpl = document.getElementById('tpl-' + id);
+  if (!tpl) return;
+
+  shell.setAttribute('data-active', id);
+
+  // Clone template content into modal body
+  body.innerHTML = '';
+  body.appendChild(tpl.content.cloneNode(true));
+
+  // Show overlay
+  overlay.classList.add('open');
+  document.body.classList.add('modal-open');
+
+  // Scroll modal body to top
+  body.scrollTop = 0;
+
+  // Push history state so mobile swipe-back & browser back button close modal instead of exiting site
+  if (pushHistory) {
+    const hash = '#' + id;
+    if (window.location.hash !== hash) {
+      window.history.pushState({ modalId: id }, '', hash);
+    }
+    isModalHistoryActive = true;
+  }
+}
+
+function closeModal(triggerHistoryBack = true) {
+  if (!overlay) return;
+  
+  const isCurrentlyOpen = overlay.classList.contains('open');
+  overlay.classList.remove('open');
+  document.body.classList.remove('modal-open');
+  if (shell) shell.removeAttribute('data-active');
+
+  // Clear content after animation finishes
+  setTimeout(() => { if (body && !overlay.classList.contains('open')) body.innerHTML = ''; }, 350);
+
+  // Synchronize browser history if closed manually (X button, backdrop click, ESC key)
+  if (isCurrentlyOpen && triggerHistoryBack && (isModalHistoryActive || window.location.hash)) {
+    isModalHistoryActive = false;
+    if (window.location.hash) {
+      try {
+        window.history.pushState({ modalId: null }, '', window.location.pathname);
+      } catch (err) {}
+    }
+  }
+}
+
+// ── Handle Mobile Swipe-Back Gesture & Browser Back Button (popstate Listener) ──
+window.addEventListener('popstate', (e) => {
+  if (overlay && overlay.classList.contains('open')) {
+    // Browser back button or mobile swipe-back popped history: close modal UI without extra history.back()
+    closeModal(false);
+  } else if (e.state && e.state.modalId) {
+    // User navigated forward to a modal state
+    openModal(e.state.modalId, false);
+  }
+});
+
+// ── Deep-Linking Routing (index.html#projects, #me, #skills, #contact, #fun) ──
+function initDeepLinkRouting() {
+  const hash = window.location.hash.replace('#', '').trim();
+  if (hash) {
+    const validRoutes = ['me', 'projects', 'skills', 'fun', 'contact'];
+    if (validRoutes.includes(hash)) {
+      setTimeout(() => openModal(hash, false), 100);
+    }
+  }
+}
+
+window.openModal = openModal;
+window.closeModal = closeModal;
 
 function initGlobalDelegation() {
   document.addEventListener('click', (e) => {
@@ -169,37 +248,6 @@ function initGlobalDelegation() {
   });
 }
 
-window.closeModal = closeModal;
-
-/* ── OPEN / CLOSE HELPERS ───────────────────────────────────────────────── */
-function openModal(id) {
-  const tpl = document.getElementById('tpl-' + id);
-  if (!tpl) return;
-
-  shell.setAttribute('data-active', id);
-
-  // Clone template content into modal body
-  body.innerHTML = '';
-  body.appendChild(tpl.content.cloneNode(true));
-
-  // Show overlay
-  overlay.classList.add('open');
-  document.body.classList.add('modal-open');
-
-  // Scroll modal body to top
-  body.scrollTop = 0;
-}
-
-function closeModal() {
-  if (!overlay) return;
-  overlay.classList.remove('open');
-  document.body.classList.remove('modal-open');
-  if (shell) shell.removeAttribute('data-active');
-
-  // Clear content after animation finishes
-  setTimeout(() => { if (body) body.innerHTML = ''; }, 350);
-}
-
 /* ── PARALLAX EFFECT ────────────────────────────────────────────────────── */
 let cachedBgWord = null;
 let isParallaxTicking = false;
@@ -250,7 +298,7 @@ window.copyToClipboard = function(text, btn) {
   } else {
     fallbackCopy(text, copyAction);
   }
-};
+}
 
 function fallbackCopy(text, onSuccess) {
   const ta = document.createElement('textarea');
