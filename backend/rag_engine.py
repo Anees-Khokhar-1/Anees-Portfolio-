@@ -290,7 +290,7 @@ class HybridVectorStore:
         # Tier 1: FAISS Dense Embeddings (if available)
         if FAISS_AVAILABLE:
             try:
-                self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+                self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
                 texts = [f"{c['title']} {c['keywords']} {c['content']}" for c in chunks]
                 embeddings = self.embedding_model.encode(texts, normalize_embeddings=True)
                 dim = embeddings.shape[1]
