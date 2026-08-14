@@ -2058,26 +2058,49 @@ input:focus, input:focus-visible, textarea:focus, textarea:focus-visible,
   overflow-x: auto;
 }
 
-@media (max-width: 600px) {
-  .arch-grid { grid-template-columns: 1fr; }
-  .chat-bubble { max-width: 88%; font-size: 0.88rem; }
-  .chat-header { padding: 10px 12px; }
-  .chat-back { font-size: 0.78rem; }
-  .chat-header-right { gap: 6px; }
-  .vbar-wave-container { padding: 0 8px; }
+/* Single-row horizontal swipeable suggestion chips container */
+.chat-chips, .chip-suggestions {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  gap: 8px !important;
+  padding: 6px 4px 10px !important;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.chat-chips::-webkit-scrollbar, .chip-suggestions::-webkit-scrollbar {
+  display: none;
+}
+.chat-chip, .chip-btn {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
 }
 
-@media (max-width: 380px) {
-  .chat-header { padding: 8px 10px; }
-  .chat-back { font-size: 0.72rem; padding: 4px 6px; }
-  .chat-brand-txt strong { font-size: 0.85rem; }
-  .chat-avatar { width: 30px; height: 30px; }
-  .chat-header-right { gap: 3px; }
-  .toggle-label { font-size: 0.62rem; }
-  .chat-clear-btn { font-size: 0.68rem; padding: 3px 6px; }
+@media (max-width: 600px) {
+  .arch-grid { grid-template-columns: 1fr; }
+  .chat-bubble { max-width: 90%; font-size: 0.88rem; }
+  .chat-header { padding: 8px 10px; gap: 6px; }
+  .chat-header-left { gap: 8px; }
+  .chat-header-right { gap: 4px; }
+  .back-txt { display: none; }
+  .chat-back { padding: 6px 10px; font-size: 0.85rem; font-weight: 800; }
+  .toggle-label { font-size: 0.65rem; }
+  .vbar-wave-container { padding: 0 6px; }
+}
+
+@media (max-width: 480px) {
+  .chat-header { padding: 6px 8px; }
+  .chat-brand-txt span { display: none; }
+  .chat-brand-txt strong { font-size: 0.82rem; }
+  .chat-avatar { width: 28px; height: 28px; }
+  .mind-mode-toggle { padding: 2px 6px; }
+  .toggle-slider { width: 26px; height: 14px; }
+  .toggle-slider::after { width: 10px; height: 10px; }
+  .mind-mode-toggle input:checked + .toggle-slider::after { transform: translateX(12px); }
+  .chat-clear-btn { padding: 4px 8px; font-size: 0.72rem; }
   .vbar-wave-bar:nth-child(n+7) { display: none; }
   .vbar-status-text { display: none; }
-  .vbar-timer { font-size: 0.78rem; min-width: 28px; }
+  .vbar-timer { font-size: 0.75rem; min-width: 26px; }
   .mic-btn { width: 36px; height: 36px; min-width: 36px; }
 }
 

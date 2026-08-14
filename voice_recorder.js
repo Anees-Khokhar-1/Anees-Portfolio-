@@ -206,9 +206,9 @@ class WhatsAppVoiceRecorder {
   }
 
   bindEvents() {
-    this.micBtn.addEventListener('click', (e) => {
+    const handleMicTap = (e) => {
       e.preventDefault();
-      // If currently speaking TTS response, cancel TTS on mic tap
+      e.stopPropagation();
       if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
         window.speechSynthesis.cancel();
       }
@@ -218,7 +218,10 @@ class WhatsAppVoiceRecorder {
       } else {
         this.stopAndSend();
       }
-    });
+    };
+
+    this.micBtn.addEventListener('click', handleMicTap);
+    this.micBtn.addEventListener('touchstart', handleMicTap, { passive: false });
 
     this.cancelBtn.addEventListener('click', (e) => {
       e.preventDefault();

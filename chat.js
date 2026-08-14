@@ -16,6 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const ttsModeToggle = document.getElementById('ttsModeToggle');
   const micBtn = document.getElementById('micBtn');
 
+  // Auto-scroll chat messages container when soft keyboard toggles on mobile
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      if (messages) {
+        messages.scrollTop = messages.scrollHeight;
+      }
+    });
+  }
+
   // ── Ephemeral Session Management ──────────────────────────────────────────
   // Each visit or page refresh starts with a 100% clean, fresh chatbot session.
   let conversationHistory = [];
