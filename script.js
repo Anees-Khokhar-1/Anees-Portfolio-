@@ -9,7 +9,27 @@ document.addEventListener('DOMContentLoaded', () => {
   initModalClose();
   initGlobalDelegation();
   initScrollProgress();
+  initHeroVoiceRecorder();
 });
+
+/* ── HERO WHATSAPP VOICE RECORDER ─────────────────────────────────────── */
+function initHeroVoiceRecorder() {
+  const form = document.getElementById('askForm');
+  const input = document.getElementById('askInput');
+  const micBtn = document.getElementById('heroMicBtn');
+  if (form && input && micBtn && window.WhatsAppVoiceRecorder) {
+    new WhatsAppVoiceRecorder({
+      form: form,
+      input: input,
+      micBtn: micBtn,
+      onSend: (text) => {
+        if (text) {
+          window.location.href = 'chat.html?q=' + encodeURIComponent(text);
+        }
+      }
+    });
+  }
+}
 
 function initScrollProgress() {
   const bar = document.getElementById('scrollProgress');

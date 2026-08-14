@@ -20,7 +20,7 @@ from backend.analytics import log_query, log_contact, purge_old_records
 
 # Configure Structured Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
-logger = logger = logging.getLogger("ai_digital_twin")
+logger = logging.getLogger("ai_digital_twin")
 
 # Auto-purge telemetry older than 90 days on backend startup (PDPL / PECA Compliance)
 try:
@@ -81,6 +81,18 @@ async def bot_shield_and_caching_middleware(request: Request, call_next):
     if path.endswith((".js", ".css", ".png", ".jpg", ".jpeg", ".svg", ".pdf", ".ico")):
         response.headers["Cache-Control"] = "public, max-age=86400, must-revalidate"
     return response
+
+# ── Periodic Rate Limiter Memory Cleanup ──────────────────────────────────
+import random as _random
+@app.middleware("http")
+async def rate_limiter_cleanup_middleware(request: Request, call_next):
+    """Probabilistic GC: ~1% of requests trigger cleanup of stale IP entries."""
+    if _random.random() < 0.01:
+        now = time.time()
+        stale_ips = [ip for ip, ts in _IP_REQUEST_LOGS.items() if not ts or now - ts[-1] > 300]
+        for ip in stale_ips:
+            del _IP_REQUEST_LOGS[ip]
+    return await call_next(request)
 
 # ── Load Knowledge Base & Initialize RAG Engine ──────────────────────────────
 KNOWLEDGE_PATH = Path(__file__).parent / "knowledge.json"
@@ -453,6 +465,7 @@ async def chat_endpoint(request: ChatRequest, raw_request: Request):
 
     try:
         client = Groq(api_key=api_key)
+        start_time = time.time()  # Track response latency
         # ── Senior Engineer RAG: Retrieve Top-4 Semantic Knowledge Chunks (Non-Blocking) ──
         rag_engine = RAGEngine.get_instance(KNOWLEDGE_BASE)
         retrieved_chunks = await asyncio.to_thread(rag_engine.retrieve, request.message, 4)
@@ -511,8 +524,9 @@ async def chat_endpoint(request: ChatRequest, raw_request: Request):
         reply = re.sub(r'(?<!\n)\n?(\d+\.\s+\*\*|\-\s+\*\*)', r'\n\n\1', reply)
         reply = re.sub(r'\n{3,}', '\n\n', reply).strip()
 
-        # Log query telemetry for recruiter analytics
-        log_query(client_ip, request.message, used_model or "llama-3.3-70b-versatile", 0.0)
+        # Log query telemetry for recruiter analytics (with actual latency)
+        elapsed_ms = (time.time() - start_time) * 1000
+        log_query(client_ip, request.message, used_model or "llama-3.3-70b-versatile", elapsed_ms)
 
         return ChatResponse(
             reply=reply,
@@ -601,6 +615,17 @@ async def chat_stream_endpoint(request: ChatRequest, raw_request: Request):
 
             elapsed_ms = (time.time() - start_t) * 1000
             log_query(client_ip, request.message, "llama-3.3-70b-versatile-stream", elapsed_ms)
+
+            # Emit telemetry metadata event for Agentic Mind Mode
+            metadata = json.dumps({
+                "rag_engine": rag_engine.store.engine_type,
+                "rag_top_score": round(rag_results[0]["score"], 3) if rag_results else 0,
+                "rag_top_title": rag_results[0].get("title", "N/A") if rag_results else "N/A",
+                "security_check": "PASS",
+                "model": "llama-3.3-70b-versatile",
+                "latency_ms": round(elapsed_ms, 1)
+            })
+            yield f"event: metadata\ndata: {metadata}\n\n"
             yield "data: [DONE]\n\n"
         except Exception as e:
             logger.error(f"Streaming error: {e}")

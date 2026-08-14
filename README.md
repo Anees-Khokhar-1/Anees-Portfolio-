@@ -44,6 +44,13 @@ Production-grade personal portfolio and live **RAG-Powered AI Digital Twin** cre
 - **Hero Gateway (`index.html`):** Direct question prompt router that automatically routes queries into the chat interface.
 - **Executive Paper Resume (`resume.html`):** Print-optimized ATS layout with direct PDF download support (`assets/Anees.pdf`).
 
+### 5. 🎙️ Multimodal Voice Assistant & Web Audio Architecture
+- **4-State Visual Machine:** Real-time state machine transitioning across `IDLE` ➔ `LISTENING` ➔ `THINKING` ➔ `SPEAKING` with distinct visual animations.
+- **Web Audio API Frequency Equalizer:** 12 dynamic visualizer bars driven by `AnalyserNode` frequency bin scaling in real-time.
+- **Live Ghost Transcript Preview:** Real-time translucent overlay showing speech interim results while speaking.
+- **Text-to-Speech (TTS) Voice Engine:** Web Speech Synthesis output engine with sentence chunking and markdown stripping.
+- **Stage Demo Hotkeys:** Press `Spacebar` or `Ctrl+Shift+V` to toggle voice recording for live recruiter interviews or stage presentations.
+
 ---
 
 ## 📁 Master Portfolio Projects Showcase (8 Production Projects)

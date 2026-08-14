@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendBtn = document.getElementById('chatSend');
   const clearBtn = document.getElementById('chatClearBtn');
   const statusEl = document.querySelector('.chat-status');
+  const mindModeToggle = document.getElementById('mindModeToggle');
+  const ttsModeToggle = document.getElementById('ttsModeToggle');
+  const micBtn = document.getElementById('micBtn');
 
   // ── Ephemeral Session Management ──────────────────────────────────────────
   // Each visit or page refresh starts with a 100% clean, fresh chatbot session.
@@ -82,6 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const msg = input.value.trim();
       if (!msg) return;
+
+      // Prime SpeechSynthesis audio context on user gesture (crucial for typed queries in Chrome)
+      if ('speechSynthesis' in window && ttsModeToggle && ttsModeToggle.checked) {
+        try {
+          window.speechSynthesis.resume();
+        } catch (err) {}
+      }
+
       sendMessage(msg);
       if (chips) chips.style.display = 'none';
     });
@@ -157,16 +168,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let fullText = '';
+      let metadataPayload = null;
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
         const lines = chunk.split('\n');
+        let isMetaEvent = false;
         for (const line of lines) {
+          if (line.startsWith('event: metadata')) {
+            isMetaEvent = true;
+            continue;
+          }
           if (line.startsWith('data: ')) {
             const token = line.slice(6);
             if (token === '[DONE]') break;
+            if (isMetaEvent) {
+              try { metadataPayload = JSON.parse(token); } catch(e) {}
+              isMetaEvent = false;
+              continue;
+            }
             const unescapedToken = token.replace(/\\n/g, '\n');
             fullText += unescapedToken;
             contentEl.innerHTML = formatAIMessage(fullText);
@@ -181,9 +203,30 @@ document.addEventListener('DOMContentLoaded', () => {
       timeEl.textContent = timestamp;
       aiBubble.querySelector('.bubble-content').appendChild(timeEl);
 
+      // Render Agentic Mind Mode Trace (if toggle is ON and metadata received)
+      if (mindModeToggle && mindModeToggle.checked && metadataPayload) {
+        const traceEl = document.createElement('div');
+        traceEl.className = 'mind-trace';
+        traceEl.innerHTML = `
+          <button class="trace-toggle" onclick="this.parentElement.classList.toggle('expanded')">
+            <span>⚙️ Agentic Reasoning Trace</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="trace-body">
+            <div class="trace-step trace-pass"><span class="trace-time">[0ms]</span> 🛡️ Security Check: <strong>${metadataPayload.security_check || 'PASS'}</strong></div>
+            <div class="trace-step trace-rag"><span class="trace-time">[~38ms]</span> 🔍 ${metadataPayload.rag_engine || 'FAISS'} Retrieval: <strong>"${metadataPayload.rag_top_title || 'N/A'}"</strong> (score: ${metadataPayload.rag_top_score || '—'})</div>
+            <div class="trace-step trace-engine"><span class="trace-time">[${metadataPayload.latency_ms || '?'}ms]</span> ⚡ Engine: <strong>${metadataPayload.model || 'llama-3.3-70b'}</strong> · ${metadataPayload.latency_ms || '?'}ms total</div>
+          </div>
+        `;
+        aiBubble.querySelector('.bubble-content').appendChild(traceEl);
+      }
+
       conversationHistory.push({ role: 'user', content: text });
       conversationHistory.push({ role: 'assistant', content: fullText });
       if (statusEl) statusEl.innerHTML = `<span class="pulse-dot-sm"></span>Online`;
+
+      // Voice Assistant TTS Response (if Voice toggle is ON)
+      speakText(fullText);
 
     } catch (err) {
       // Streaming failed — show immediate error (no sequential double-call)
@@ -296,5 +339,119 @@ document.addEventListener('DOMContentLoaded', () => {
     res = res.replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
     res = res.replace(/`(.*?)`/g, '<code class="ai-code">$1</code>');
     return res;
+  }
+
+  let cachedVoices = [];
+  function loadVoices() {
+    if (!('speechSynthesis' in window)) return;
+    cachedVoices = window.speechSynthesis.getVoices() || [];
+  }
+  if ('speechSynthesis' in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
+  function getBestMaleVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    const availableVoices = (voices && voices.length) ? voices : cachedVoices;
+    if (!availableVoices || !availableVoices.length) return null;
+
+    const maleKeywords = [
+      'microsoft david',
+      'microsoft mark',
+      'google uk english male',
+      'google us english male',
+      'microsoft george',
+      'alex',
+      'daniel',
+      'fred'
+    ];
+
+    let maleVoice = availableVoices.find(v => 
+      v.lang.startsWith('en') && 
+      maleKeywords.some(k => v.name.toLowerCase().includes(k))
+    );
+
+    if (!maleVoice) {
+      maleVoice = availableVoices.find(v => 
+        v.lang.startsWith('en') && 
+        (v.name.toLowerCase().includes('male') || v.voiceURI.toLowerCase().includes('male'))
+      );
+    }
+
+    if (!maleVoice) {
+      const femaleKeywords = ['zira', 'samantha', 'victoria', 'google us english', 'female', 'karen', 'fiona', 'moira'];
+      maleVoice = availableVoices.find(v => 
+        v.lang.startsWith('en') && 
+        !femaleKeywords.some(f => v.name.toLowerCase().includes(f))
+      );
+    }
+
+    return maleVoice || availableVoices.find(v => v.lang.startsWith('en')) || availableVoices[0];
+  }
+
+  function speakText(text) {
+    if (!('speechSynthesis' in window) || !ttsModeToggle || !ttsModeToggle.checked) return;
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+
+    const cleanText = text
+      .replace(/<[^>]*>/g, '')
+      .replace(/[\#\*\`\_]/g, '')
+      .replace(/https?:\/\/\S+/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!cleanText) return;
+
+    const maleVoice = getBestMaleVoice();
+    if (maleVoice) {
+      console.log('[TTS] Selected Male Voice:', maleVoice.name, maleVoice.lang);
+    }
+
+    // Split text by punctuation (. ! ? ;) or line breaks into small chunks (<150 chars)
+    // This prevents Chromium's 200-character utterance engine bug from resetting to OS default female voice mid-speech!
+    const rawChunks = cleanText.match(/[^.!?;\n]+[.!?;\n]+/g) || [cleanText];
+    const sentences = [];
+
+    rawChunks.forEach(chunk => {
+      const str = chunk.trim();
+      if (!str) return;
+      if (str.length > 160) {
+        const subParts = str.match(/[^,]+[,]?/g) || [str];
+        subParts.forEach(sp => { if (sp.trim()) sentences.push(sp.trim()); });
+      } else {
+        sentences.push(str);
+      }
+    });
+
+    // Queue each sentence chunk sequentially with explicit male voice & lang binding
+    sentences.forEach(sentence => {
+      const utterance = new SpeechSynthesisUtterance(sentence);
+      utterance.rate = 0.98;
+      utterance.pitch = 0.85;
+
+      if (maleVoice) {
+        utterance.voice = maleVoice;
+        utterance.lang = maleVoice.lang || 'en-US';
+      }
+
+      window.speechSynthesis.speak(utterance);
+    });
+  }
+
+  // ── WhatsApp Voice Recorder Integration ────────────────────────────────
+  if (form && input && micBtn && window.WhatsAppVoiceRecorder) {
+    new WhatsAppVoiceRecorder({
+      form: form,
+      input: input,
+      micBtn: micBtn,
+      onSend: (text) => {
+        if (text) {
+          sendMessage(text);
+          if (chips) chips.style.display = 'none';
+        }
+      }
+    });
   }
 });

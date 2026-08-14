@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <title>AI Digital Twin Chat | Anees Munir Khokhar</title>
   <meta name="description" content="Chat with Anees Munir Khokhar's AI Digital Twin — ask about skills, projects, experience, and availability. Powered by Groq Llama-3." />
@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=23" />
+  <link rel="stylesheet" href="style.css?v=28" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -72,13 +72,25 @@
           <span class="chat-status"><span class="pulse-dot-sm"></span>Online</span>
         </div>
       </div>
-      <button class="chat-clear-btn" id="chatClearBtn" title="Reset Conversation Memory & Clear Screen" aria-label="Clear chat history">
-        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.2" fill="none" style="margin-right:5px; vertical-align:-2px;">
-          <polyline points="3 6 5 6 21 6"></polyline>
-          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-        </svg>
-        Clear Chat
-      </button>
+      <div class="chat-header-right">
+        <label class="mind-mode-toggle" title="Show AI reasoning trace">
+          <input type="checkbox" id="mindModeToggle" />
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">⚙️ Mind</span>
+        </label>
+        <label class="mind-mode-toggle tts-mode-toggle" title="Enable AI Voice Audio Output (TTS)">
+          <input type="checkbox" id="ttsModeToggle" />
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">🔊 Voice</span>
+        </label>
+        <button class="chat-clear-btn" id="chatClearBtn" title="Reset Conversation Memory & Clear Screen" aria-label="Clear chat history">
+          <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.2" fill="none" style="margin-right:5px; vertical-align:-2px;">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Clear
+        </button>
+      </div>
     </header>
 
     <!-- Messages Area -->
@@ -115,6 +127,14 @@
           maxlength="1000"
           required
         />
+        <button type="button" id="micBtn" class="mic-btn" aria-label="Voice input" title="Speak to Anees AI">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="1" width="6" height="11" rx="3"/>
+            <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
         <button type="submit" id="chatSend" aria-label="Send message">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="22" y1="2" x2="11" y2="13"/>
@@ -126,6 +146,7 @@
     </footer>
   </div>
 
-  <script src="chat.js?v=23" defer></script>
+  <script src="voice_recorder.js?v=2" defer></script>
+  <script src="chat.js?v=24" defer></script>
 </body>
 </html>
