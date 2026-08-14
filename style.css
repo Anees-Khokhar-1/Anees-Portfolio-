@@ -222,16 +222,17 @@ a{text-decoration:none;color:inherit;}
   transform: translateY(-2px);
 }
 .ask-box input {
-  flex: 1; height: 100%; border: 0; outline: 0; background: transparent;
-  padding: 0 22px; font-size: clamp(15px, 1.2vw, 16.5px);
+  flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent;
+  padding: 0 12px 0 22px; font-size: clamp(14px, 1.2vw, 16.5px);
   font-family: var(--sans); color: #0F172A; font-weight: 500;
 }
 .ask-box input::placeholder { color: #64748B; }
 .ask-box button {
-  width: clamp(42px, 5vh, 46px); height: clamp(42px, 5vh, 46px);
+  width: clamp(40px, 4.8vh, 44px); height: clamp(40px, 4.8vh, 44px);
   border: 0; border-radius: 50%; cursor: pointer;
   background: #0EA5E9; color: #FFFFFF; font-size: 1.2rem;
   display: grid; place-items: center; transition: all .25s ease;
+  flex-shrink: 0;
 }
 .ask-box button:hover {
   transform: scale(1.08); background: #0284C7;
@@ -1910,7 +1911,17 @@ input:focus, input:focus-visible, textarea:focus, textarea:focus-visible,
 }
 
 .hero-mic-btn {
-  margin-right: 4px;
+  margin-right: 6px;
+  background: rgba(14, 165, 233, 0.08) !important;
+  border: 1px solid rgba(14, 165, 233, 0.25) !important;
+  color: #0EA5E9 !important;
+}
+.hero-mic-btn:hover {
+  background: rgba(14, 165, 233, 0.18) !important;
+  border-color: #0EA5E9 !important;
+  color: #0EA5E9 !important;
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.25);
 }
 .mic-btn.recording-active {
   background: rgba(239, 68, 68, 0.15) !important;
