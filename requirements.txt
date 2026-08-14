@@ -1,4 +1,4 @@
-huggingface-hub
+huggingface-hub==0.24.6
 fastapi>=0.110.0
 uvicorn>=0.30.0
 groq>=0.11.0
