@@ -28,6 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Ephemeral Session Management ──────────────────────────────────────────
   // Each visit or page refresh starts with a 100% clean, fresh chatbot session.
   let conversationHistory = [];
+  function hideChips() {
+    if (chips && !chips.classList.contains('hide-chips')) {
+      chips.classList.add('hide-chips');
+      setTimeout(() => {
+        try { chips.style.display = 'none'; } catch(e){}
+      }, 320);
+    }
+  }
+
   try {
     window.sessionStorage.removeItem('anees_ai_chat_history');
   } catch (err) {}
@@ -49,7 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
-      if (chips) chips.style.display = 'flex';
+      if (chips) {
+        chips.style.display = 'flex';
+        chips.classList.remove('hide-chips');
+      }
       input.focus();
     });
   }
@@ -77,13 +89,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle chip clicks
   if (chips) {
     chips.addEventListener('click', (e) => {
-      const chip = e.target.closest('.chip');
+      const chip = e.target.closest('.chip') || e.target.closest('.chat-chip');
       if (!chip) return;
-      const prompt = chip.getAttribute('data-prompt');
+      const prompt = chip.getAttribute('data-prompt') || chip.getAttribute('data-query') || chip.innerText.trim();
       if (prompt) {
         input.value = prompt;
         sendMessage(prompt);
-        chips.style.display = 'none'; // Hide chips after first use
+        hideChips();
       }
     });
   }
@@ -140,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function sendMessage(text) {
+    hideChips();
     appendBubble('user', text);
     input.value = '';
     input.disabled = true;

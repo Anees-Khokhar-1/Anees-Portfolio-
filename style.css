@@ -2058,22 +2058,70 @@ input:focus, input:focus-visible, textarea:focus, textarea:focus-visible,
   overflow-x: auto;
 }
 
-/* Single-row horizontal swipeable suggestion chips container */
+/* ── Micro-Glassmorphism Auto-Hiding Suggestion Chips (Option A) ────────── */
 .chat-chips, .chip-suggestions {
   display: flex !important;
   flex-wrap: nowrap !important;
   overflow-x: auto !important;
   gap: 8px !important;
-  padding: 6px 4px 10px !important;
+  padding: 4px 2px 8px !important;
+  margin-top: 6px;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  max-height: 50px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), 
+              max-height 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              margin 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .chat-chips::-webkit-scrollbar, .chip-suggestions::-webkit-scrollbar {
   display: none;
 }
+.chat-chips.hide-chips, .chip-suggestions.hide-chips {
+  opacity: 0 !important;
+  transform: translateY(-8px) scale(0.96) !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+}
+
 .chat-chip, .chip-btn {
   flex-shrink: 0 !important;
   white-space: nowrap !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  padding: 5px 13px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.78) !important;
+  border: 1px solid rgba(14, 165, 233, 0.22) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  color: #0F172A !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+  cursor: pointer !important;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.chat-chip:hover, .chip-btn:hover {
+  background: #FFFFFF !important;
+  border-color: #38BDF8 !important;
+  color: #0284C7 !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.16) !important;
+}
+.chat-chip:active, .chip-btn:active {
+  transform: scale(0.96) !important;
+}
+
+@media (max-width: 480px) {
+  .chat-chip, .chip-btn {
+    font-size: 0.70rem !important;
+    padding: 4px 10px !important;
+  }
 }
 
 @media (max-width: 600px) {
