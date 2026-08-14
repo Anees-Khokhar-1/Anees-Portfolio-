@@ -37,7 +37,7 @@ if assets_dir.exists():
     app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
 
 with gr.Blocks(title="Anees AI Digital Twin Portfolio", css="footer {visibility: hidden}") as demo:
-    gr.HTML("<iframe src='/index.html' style='width:100%; height:95vh; border:none; border-radius:12px;'></iframe>")
+    gr.HTML("<iframe src='/index.html' style='width:100%; height:98vh; border:none; border-radius:12px;' allow='microphone; camera; clipboard-write; autoplay'></iframe>")
 
 # Mount Gradio into FastAPI app
 app = gr.mount_gradio_app(app, demo, path="/gradio")
