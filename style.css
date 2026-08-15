@@ -2058,17 +2058,16 @@ input:focus, input:focus-visible, textarea:focus, textarea:focus-visible,
   overflow-x: auto;
 }
 
-/* ── Micro-Glassmorphism Auto-Hiding Suggestion Chips (Option A) ────────── */
+/* ── 2-Row Compact Suggestion Chips & Micro Back Button ────────── */
 .chat-chips, .chip-suggestions {
   display: flex !important;
-  flex-wrap: nowrap !important;
-  overflow-x: auto !important;
-  gap: 8px !important;
-  padding: 4px 2px 8px !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 6px 8px !important;
+  width: 100% !important;
   margin-top: 6px;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  max-height: 50px;
+  max-height: 80px;
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), 
@@ -2076,9 +2075,6 @@ input:focus, input:focus-visible, textarea:focus, textarea:focus-visible,
               max-height 0.32s cubic-bezier(0.16, 1, 0.3, 1),
               margin 0.32s cubic-bezier(0.16, 1, 0.3, 1),
               padding 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.chat-chips::-webkit-scrollbar, .chip-suggestions::-webkit-scrollbar {
-  display: none;
 }
 .chat-chips.hide-chips, .chip-suggestions.hide-chips {
   opacity: 0 !important;
@@ -2090,66 +2086,93 @@ input:focus, input:focus-visible, textarea:focus, textarea:focus-visible,
   overflow: hidden !important;
 }
 
-.chat-chip, .chip-btn {
-  flex-shrink: 0 !important;
+.chip, .chat-chip, .chip-btn {
+  flex: 0 1 auto !important;
   white-space: nowrap !important;
-  font-size: 0.74rem !important;
+  font-size: 0.72rem !important;
   font-weight: 700 !important;
-  padding: 5px 13px !important;
+  padding: 0 11px !important;
+  height: 26px !important;
+  line-height: 26px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   border-radius: 999px !important;
-  background: rgba(255, 255, 255, 0.78) !important;
-  border: 1px solid rgba(14, 165, 233, 0.22) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  border: 1px solid rgba(14, 165, 233, 0.25) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   color: #0F172A !important;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
   cursor: pointer !important;
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
-.chat-chip:hover, .chip-btn:hover {
+.chip:hover, .chat-chip:hover, .chip-btn:hover {
   background: #FFFFFF !important;
   border-color: #38BDF8 !important;
   color: #0284C7 !important;
-  transform: translateY(-2px) scale(1.02) !important;
-  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.16) !important;
+  transform: translateY(-1px) scale(1.02) !important;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.16) !important;
 }
-.chat-chip:active, .chip-btn:active {
+.chip:active, .chat-chip:active, .chip-btn:active {
   transform: scale(0.96) !important;
 }
 
-@media (max-width: 480px) {
-  .chat-chip, .chip-btn {
-    font-size: 0.70rem !important;
-    padding: 4px 10px !important;
-  }
+/* Micro Back Button Template (<50px width) */
+.chat-back {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  padding: 3px 8px !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  height: 25px !important;
+  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  color: #475569 !important;
+  white-space: nowrap !important;
+  text-decoration: none !important;
+}
+.chat-back:hover {
+  background: #FFFFFF !important;
+  border-color: #0EA5E9 !important;
+  color: #0EA5E9 !important;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .arch-grid { grid-template-columns: 1fr; }
   .chat-bubble { max-width: 90%; font-size: 0.88rem; }
-  .chat-header { padding: 8px 10px; gap: 6px; }
+  .chat-header { padding: 4px 8px; gap: 4px; }
   .chat-header-left { gap: 8px; }
-  .chat-header-right { gap: 4px; }
-  .back-txt { display: none; }
-  .chat-back { padding: 6px 10px; font-size: 0.85rem; font-weight: 800; }
-  .toggle-label { font-size: 0.65rem; }
+  .chat-header-right { gap: 3px; }
   .vbar-wave-container { padding: 0 6px; }
-}
 
-@media (max-width: 480px) {
-  .chat-header { padding: 6px 8px; }
-  .chat-brand-txt span { display: none; }
-  .chat-brand-txt strong { font-size: 0.82rem; }
-  .chat-avatar { width: 28px; height: 28px; }
-  .mind-mode-toggle { padding: 2px 6px; }
-  .toggle-slider { width: 26px; height: 14px; }
-  .toggle-slider::after { width: 10px; height: 10px; }
-  .mind-mode-toggle input:checked + .toggle-slider::after { transform: translateX(12px); }
-  .chat-clear-btn { padding: 4px 8px; font-size: 0.72rem; }
-  .vbar-wave-bar:nth-child(n+7) { display: none; }
-  .vbar-status-text { display: none; }
-  .vbar-timer { font-size: 0.75rem; min-width: 26px; }
-  .mic-btn { width: 36px; height: 36px; min-width: 36px; }
+  /* Small Micro Back Button */
+  .chat-back { padding: 2px 6px !important; font-size: 0.68rem !important; font-weight: 700 !important; height: 24px !important; border-radius: 6px !important; }
+  .back-icon { font-size: 0.75rem !important; font-weight: 800 !important; }
+  .back-txt { display: inline-block !important; font-size: 0.68rem !important; }
+  
+  /* Make HERO Anees AI Brand BIG & PROMINENT */
+  .chat-brand-txt { white-space: nowrap !important; }
+  .chat-brand-txt strong { font-size: 1.02rem !important; font-weight: 800 !important; color: #0F172A !important; white-space: nowrap !important; display: block !important; }
+  .chat-brand-txt span { display: block !important; font-size: 0.65rem !important; white-space: nowrap !important; }
+  .chat-avatar { width: 36px !important; height: 36px !important; min-width: 36px !important; border: 2px solid #0EA5E9 !important; box-shadow: 0 0 10px rgba(14, 165, 233, 0.3) !important; flex-shrink: 0 !important; }
+  
+  /* Make side action controls SMALL & COMPACT */
+  .mind-mode-toggle { padding: 2px 4px !important; font-size: 0.62rem !important; height: 24px !important; }
+  .toggle-slider { width: 22px !important; height: 12px !important; }
+  .toggle-slider::after { width: 8px !important; height: 8px !important; }
+  .mind-mode-toggle input:checked + .toggle-slider::after { transform: translateX(10px) !important; }
+  .toggle-label { font-size: 0.60rem !important; }
+  .chat-clear-btn { padding: 2px 5px !important; font-size: 0.65rem !important; height: 24px !important; }
+  
+  .chip, .chat-chip, .chip-btn {
+    font-size: 0.68rem !important;
+    padding: 0 9px !important;
+    height: 25px !important;
+    line-height: 25px !important;
+  }
 }
 
 @media (min-width: 601px) and (max-width: 900px) {
