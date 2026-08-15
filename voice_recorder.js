@@ -274,9 +274,27 @@ class WhatsAppVoiceRecorder {
       this.micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       this.isRecording = true;
       this.transcriptText = '';
+      this.audioChunks = [];
       this.setState('listening');
       
       this.playBeep(880, 0.09);
+
+      // Start HTML5 MediaRecorder (universal support on iPhone iOS Safari & Android Chrome)
+      let mimeType = 'audio/webm';
+      if (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported) {
+        if (MediaRecorder.isTypeSupported('audio/webm')) mimeType = 'audio/webm';
+        else if (MediaRecorder.isTypeSupported('audio/mp4')) mimeType = 'audio/mp4';
+      }
+      
+      if (typeof MediaRecorder !== 'undefined') {
+        this.mediaRecorder = new MediaRecorder(this.micStream, { mimeType });
+        this.mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) {
+            this.audioChunks.push(e.data);
+          }
+        };
+        this.mediaRecorder.start(200);
+      }
 
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       this.audioCtx = new AudioCtx();
@@ -300,12 +318,6 @@ class WhatsAppVoiceRecorder {
       this.timerId = setInterval(() => this.updateTimer(), 1000);
 
       this.visualize();
-
-      if (this.recognition) {
-        try { this.recognition.start(); } catch (err) {}
-      } else {
-        this.input.placeholder = 'Speak aloud, then type query...';
-      }
 
     } catch (err) {
       console.error('[VoiceRecorder] Could not access microphone:', err);
@@ -386,15 +398,51 @@ class WhatsAppVoiceRecorder {
     this.input.value = '';
   }
 
-  stopAndSend() {
+  async stopAndSend() {
     this.playBeep(660, 0.08);
-    const text = this.transcriptText || this.input.value.trim();
+    this.setState('thinking');
+    if (this.ghostTextEl) {
+      this.ghostTextEl.textContent = 'Transcribing your speech with Whisper AI...';
+    }
+
+    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+      try { this.mediaRecorder.stop(); } catch(e){}
+    }
+
+    // Short delay for final chunk
+    await new Promise(r => setTimeout(r, 180));
+
+    let text = this.input.value.trim();
+
+    // If audio chunks captured, send Blob to server /api/stt
+    if (this.audioChunks && this.audioChunks.length > 0) {
+      try {
+        const mimeType = this.mediaRecorder ? this.mediaRecorder.mimeType : 'audio/webm';
+        const audioBlob = new Blob(this.audioChunks, { type: mimeType });
+        const formData = new FormData();
+        formData.append('file', audioBlob, 'recording.webm');
+
+        const res = await fetch('/api/stt', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.text) {
+            text = data.text;
+          }
+        }
+      } catch (err) {
+        console.warn('[VoiceRecorder] STT endpoint error:', err);
+      }
+    }
+
     this.stopAudioResources();
     this.transcriptText = '';
     this.input.value = '';
 
     if (text) {
-      this.setState('thinking');
       if (typeof this.onSend === 'function') {
         this.onSend(text);
       }

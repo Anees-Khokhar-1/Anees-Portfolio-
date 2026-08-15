@@ -8,7 +8,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import time
 from collections import defaultdict
-from fastapi import FastAPI, HTTPException, status, Request
+from fastapi import FastAPI, HTTPException, status, Request, Response, UploadFile, File
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -640,6 +640,60 @@ async def chat_stream_endpoint(request: ChatRequest, raw_request: Request):
             "X-Accel-Buffering": "no"
         }
     )
+# ── STT Endpoint (Groq Whisper Large-v3 Primary + Faster-Whisper Fallback) ──
+from backend.stt_engine import stt_engine
+
+@app.post("/api/stt")
+async def stt_endpoint(file: UploadFile = File(...), raw_request: Request = None):
+    """
+    Speech-to-Text endpoint converting user audio uploads into text.
+    Supports .webm, .wav, .mp4, .m4a, .mp3 audio streams.
+    """
+    client_ip = raw_request.client.host if raw_request and raw_request.client else "127.0.0.1"
+    if is_rate_limited(client_ip):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Rate limit exceeded: Please wait before sending audio queries."
+        )
+
+    try:
+        audio_bytes = await file.read()
+        if not audio_bytes:
+            raise HTTPException(status_code=400, detail="Empty audio file submitted.")
+
+        res = stt_engine.transcribe_audio_bytes(audio_bytes, filename=file.filename or "recording.webm")
+        return res
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"STT Endpoint error: {e}")
+        raise HTTPException(status_code=500, detail=f"Speech transcription error: {str(e)}")
+
+# ── TTS Endpoint (Kokoro-82M Neural Male Voice Primary + Edge-TTS Fallback) ──
+from backend.tts_engine import tts_engine
+
+class TTSRequest(BaseModel):
+    text: str = Field(..., max_length=2000, description="Text to synthesize to male speech")
+    voice: Optional[str] = Field("am_adam", description="Male voice preset (am_adam, am_michael, bm_george)")
+
+@app.post("/api/tts")
+async def tts_endpoint(request: TTSRequest, raw_request: Request = None):
+    """
+    Text-to-Speech endpoint converting AI response text into natural male voice MP3 audio stream.
+    Primary: Kokoro-82M (am_adam). Fallback: Edge-TTS (en-US-ChristopherNeural).
+    """
+    client_ip = raw_request.client.host if raw_request and raw_request.client else "127.0.0.1"
+    if is_rate_limited(client_ip):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Rate limit exceeded: Please wait before generating speech."
+        )
+
+    audio_bytes = await tts_engine.generate_speech_bytes(request.text, voice=request.voice or "am_adam")
+    if not audio_bytes:
+        raise HTTPException(status_code=500, detail="TTS speech generation failed.")
+
+    return Response(content=audio_bytes, media_type="audio/mpeg")
 
 
 # ── Direct Contact Form Endpoint (UAE PDPL & Pakistan PECA Compliant) ────────

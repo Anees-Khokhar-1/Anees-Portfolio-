@@ -363,59 +363,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return res;
   }
 
-  let cachedVoices = [];
-  function loadVoices() {
-    if (!('speechSynthesis' in window)) return;
-    cachedVoices = window.speechSynthesis.getVoices() || [];
-  }
-  if ('speechSynthesis' in window) {
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-  }
-
-  function getBestMaleVoice() {
-    if (!('speechSynthesis' in window)) return null;
-    const voices = window.speechSynthesis.getVoices();
-    const availableVoices = (voices && voices.length) ? voices : cachedVoices;
-    if (!availableVoices || !availableVoices.length) return null;
-
-    const maleKeywords = [
-      'microsoft david',
-      'microsoft mark',
-      'google uk english male',
-      'google us english male',
-      'microsoft george',
-      'alex',
-      'daniel',
-      'fred'
-    ];
-
-    let maleVoice = availableVoices.find(v => 
-      v.lang.startsWith('en') && 
-      maleKeywords.some(k => v.name.toLowerCase().includes(k))
-    );
-
-    if (!maleVoice) {
-      maleVoice = availableVoices.find(v => 
-        v.lang.startsWith('en') && 
-        (v.name.toLowerCase().includes('male') || v.voiceURI.toLowerCase().includes('male'))
-      );
+  let currentAudio = null;
+  async function speakText(text) {
+    if (!ttsModeToggle || !ttsModeToggle.checked) return;
+    if (currentAudio) {
+      try { currentAudio.pause(); } catch(e){}
+      currentAudio = null;
     }
-
-    if (!maleVoice) {
-      const femaleKeywords = ['zira', 'samantha', 'victoria', 'google us english', 'female', 'karen', 'fiona', 'moira'];
-      maleVoice = availableVoices.find(v => 
-        v.lang.startsWith('en') && 
-        !femaleKeywords.some(f => v.name.toLowerCase().includes(f))
-      );
-    }
-
-    return maleVoice || availableVoices.find(v => v.lang.startsWith('en')) || availableVoices[0];
-  }
-
-  function speakText(text) {
-    if (!('speechSynthesis' in window) || !ttsModeToggle || !ttsModeToggle.checked) return;
-    try { window.speechSynthesis.cancel(); } catch (e) {}
 
     const cleanText = text
       .replace(/<[^>]*>/g, '')
@@ -426,40 +380,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!cleanText) return;
 
-    const maleVoice = getBestMaleVoice();
-    if (maleVoice) {
-      console.log('[TTS] Selected Male Voice:', maleVoice.name, maleVoice.lang);
+    try {
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: cleanText, voice: 'am_adam' })
+      });
+
+      if (res.ok) {
+        const audioBlob = await res.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        currentAudio = new Audio(audioUrl);
+        currentAudio.play().catch(err => {
+          console.warn('[TTS] Audio playback failed:', err);
+        });
+      }
+    } catch (err) {
+      console.warn('[TTS] Server Kokoro TTS error:', err);
     }
-
-    // Split text by punctuation (. ! ? ;) or line breaks into small chunks (<150 chars)
-    // This prevents Chromium's 200-character utterance engine bug from resetting to OS default female voice mid-speech!
-    const rawChunks = cleanText.match(/[^.!?;\n]+[.!?;\n]+/g) || [cleanText];
-    const sentences = [];
-
-    rawChunks.forEach(chunk => {
-      const str = chunk.trim();
-      if (!str) return;
-      if (str.length > 160) {
-        const subParts = str.match(/[^,]+[,]?/g) || [str];
-        subParts.forEach(sp => { if (sp.trim()) sentences.push(sp.trim()); });
-      } else {
-        sentences.push(str);
-      }
-    });
-
-    // Queue each sentence chunk sequentially with explicit male voice & lang binding
-    sentences.forEach(sentence => {
-      const utterance = new SpeechSynthesisUtterance(sentence);
-      utterance.rate = 0.98;
-      utterance.pitch = 0.85;
-
-      if (maleVoice) {
-        utterance.voice = maleVoice;
-        utterance.lang = maleVoice.lang || 'en-US';
-      }
-
-      window.speechSynthesis.speak(utterance);
-    });
   }
 
   // ── WhatsApp Voice Recorder Integration ────────────────────────────────
