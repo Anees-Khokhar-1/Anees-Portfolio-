@@ -153,7 +153,11 @@ class WhatsAppVoiceRecorder {
       };
 
       this.recognition.onerror = (e) => {
-        console.warn('[VoiceRecorder] Speech recognition event error:', e.error);
+        console.warn('[VoiceRecorder] WebSpeech event error:', e.error);
+        if (e.error === 'network' || e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+          try { this.recognition.abort(); } catch (err) {}
+          this.recognition = null;
+        }
       };
     } else {
       console.warn('[VoiceRecorder] Web Speech API not supported in this browser.');
@@ -319,6 +323,10 @@ class WhatsAppVoiceRecorder {
 
       this.visualize();
 
+      if (this.recognition) {
+        try { this.recognition.start(); } catch (err) {}
+      }
+
     } catch (err) {
       console.error('[VoiceRecorder] Could not access microphone:', err);
       this.showPermissionErrorToast();
@@ -398,6 +406,23 @@ class WhatsAppVoiceRecorder {
     this.input.value = '';
   }
 
+  stopMediaRecorderAsync() {
+    return new Promise((resolve) => {
+      if (!this.mediaRecorder || this.mediaRecorder.state === 'inactive') {
+        resolve();
+        return;
+      }
+      this.mediaRecorder.onstop = () => {
+        resolve();
+      };
+      try {
+        this.mediaRecorder.stop();
+      } catch (e) {
+        resolve();
+      }
+    });
+  }
+
   async stopAndSend() {
     this.playBeep(660, 0.08);
     this.setState('thinking');
@@ -405,32 +430,45 @@ class WhatsAppVoiceRecorder {
       this.ghostTextEl.textContent = 'Transcribing your speech with Whisper AI...';
     }
 
-    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
-      try { this.mediaRecorder.stop(); } catch(e){}
+    if (this.recognition) {
+      try {
+        this.recognition.onresult = null;
+        this.recognition.stop();
+      } catch (e) {}
     }
 
-    // Short delay for final chunk
-    await new Promise(r => setTimeout(r, 180));
+    // Wait explicitly for MediaRecorder.onstop event to flush final audio data
+    await this.stopMediaRecorderAsync();
 
-    let text = this.input.value.trim();
+    let text = (this.transcriptText || this.input.value).trim();
 
-    // If audio chunks captured, send Blob to server /api/stt
-    if (this.audioChunks && this.audioChunks.length > 0) {
+    // If text not captured from live WebSpeech API (Edge/Chrome), send audioBlob to /api/stt (Groq Whisper Large-v3)
+    if (!text && this.audioChunks && this.audioChunks.length > 0) {
       try {
-        const mimeType = this.mediaRecorder ? this.mediaRecorder.mimeType : 'audio/webm';
+        const mimeType = (this.mediaRecorder && this.mediaRecorder.mimeType) ? this.mediaRecorder.mimeType : 'audio/webm';
+        let ext = 'webm';
+        if (mimeType.includes('mp4') || mimeType.includes('aac') || mimeType.includes('m4a')) ext = 'mp4';
+        else if (mimeType.includes('ogg')) ext = 'ogg';
+        else if (mimeType.includes('wav')) ext = 'wav';
+
         const audioBlob = new Blob(this.audioChunks, { type: mimeType });
-        const formData = new FormData();
-        formData.append('file', audioBlob, 'recording.webm');
+        console.log('[VoiceRecorder] Captured audioBlob size:', audioBlob.size, 'mimeType:', mimeType);
 
-        const res = await fetch('/api/stt', {
-          method: 'POST',
-          body: formData
-        });
+        if (audioBlob.size > 300) {
+          const formData = new FormData();
+          formData.append('file', audioBlob, `recording.${ext}`);
 
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success && data.text) {
-            text = data.text;
+          const res = await fetch('/api/stt', {
+            method: 'POST',
+            body: formData
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.text) {
+              text = data.text;
+              console.log('[VoiceRecorder] Transcribed text from /api/stt:', text);
+            }
           }
         }
       } catch (err) {

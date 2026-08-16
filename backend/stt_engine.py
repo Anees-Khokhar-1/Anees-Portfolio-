@@ -27,18 +27,46 @@ class STTEngine:
             except Exception as e:
                 logger.warning(f"[STTEngine] Could not load Faster-Whisper: {e}")
 
+    @staticmethod
+    def clean_transcribed_text(text: str) -> str:
+        if not text:
+            return ""
+        
+        t = text.strip()
+        t_lower = t.lower()
+
+        # Hallucination noise phrases produced by Whisper on silent background audio
+        hallucination_phrases = [
+            "(music)", "[music]", "(blank)", "[blank]", "(sigh)", "[sigh]",
+            "thank you.", "thank you", "you", "subtitles by", "amara",
+            "transcribed by", "bye.", "bye"
+        ]
+
+        if t_lower in hallucination_phrases or t_lower.startswith("subtitles by"):
+            return ""
+
+        # Remove wrapping brackets if Whisper wraps single word in [text] or (text)
+        if (t.startswith("(") and t.endswith(")")) or (t.startswith("[") and t.endswith("]")):
+            t = t[1:-1].strip()
+
+        return t
+
     def transcribe_audio_bytes(self, audio_bytes: bytes, filename: str = "recording.webm") -> Dict[str, Any]:
         """
         Transcribe audio bytes to text using Groq Whisper Large-v3 primary,
         falling back to local Faster-Whisper.
         """
         start_time = time.time()
+        groq_key = os.environ.get("GROQ_API_KEY", "").strip() or self.groq_api_key
+
+        if "." not in filename:
+            filename = f"{filename}.webm"
 
         # 1. Try Groq Whisper Large-v3 Primary
-        if self.groq_api_key:
+        if groq_key:
             try:
                 from groq import Groq
-                client = Groq(api_key=self.groq_api_key)
+                client = Groq(api_key=groq_key)
                 
                 # Wrap bytes in tuple for Groq SDK
                 file_tuple = (filename, audio_bytes)
@@ -48,9 +76,10 @@ class STTEngine:
                     response_format="text",
                     temperature=0.0
                 )
-                text = str(res).strip() if res else ""
+                raw_text = str(res).strip() if res else ""
+                text = self.clean_transcribed_text(raw_text)
                 elapsed = int((time.time() - start_time) * 1000)
-                logger.info(f"[STTEngine] Groq Whisper transcribed in {elapsed}ms: '{text}'")
+                logger.info(f"[STTEngine] Groq Whisper ({filename}) transcribed in {elapsed}ms: '{text}' (raw: '{raw_text}')")
                 return {
                     "success": True,
                     "text": text,
@@ -66,9 +95,10 @@ class STTEngine:
             if self.faster_whisper_model:
                 audio_io = io.BytesIO(audio_bytes)
                 segments, info = self.faster_whisper_model.transcribe(audio_io, beam_size=2)
-                text = " ".join([segment.text for segment in segments]).strip()
+                raw_text = " ".join([segment.text for segment in segments]).strip()
+                text = self.clean_transcribed_text(raw_text)
                 elapsed = int((time.time() - start_time) * 1000)
-                logger.info(f"[STTEngine] Faster-Whisper transcribed in {elapsed}ms: '{text}'")
+                logger.info(f"[STTEngine] Faster-Whisper transcribed in {elapsed}ms: '{text}' (raw: '{raw_text}')")
                 return {
                     "success": True,
                     "text": text,

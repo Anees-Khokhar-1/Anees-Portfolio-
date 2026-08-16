@@ -63,35 +63,35 @@ class TTSEngine:
         except Exception as err:
             logger.warning(f"[TTSEngine] Kokoro TTS synthesis error: {err}. Trying Edge-TTS fallback...")
 
-        # 2. Resilient Edge-TTS Microsoft Male Voice Fallback (en-US-ChristopherNeural)
+        # 2. Resilient Edge-TTS Microsoft Male Voice Fallback (en-US-ChristopherNeural / Guy / Ryan / William)
+        male_edge_voices = [
+            "en-US-ChristopherNeural",
+            "en-US-GuyNeural",
+            "en-GB-RyanNeural",
+            "en-AU-WilliamNeural"
+        ]
+        
         try:
             import edge_tts
-            edge_voice = "en-US-ChristopherNeural"
-            communicate = edge_tts.Communicate(text_clean, edge_voice)
-            mp3_io = io.BytesIO()
-            async for chunk in communicate.stream():
-                if chunk["type"] == "audio":
-                    mp3_io.write(chunk["data"])
-            audio_bytes = mp3_io.getvalue()
-            elapsed = int((time.time() - start_time) * 1000)
-            logger.info(f"[TTSEngine] Edge-TTS Male Voice ({edge_voice}) generated in {elapsed}ms ({len(audio_bytes)} bytes)")
-            return audio_bytes
+            for edge_voice in male_edge_voices:
+                try:
+                    communicate = edge_tts.Communicate(text_clean, edge_voice)
+                    mp3_io = io.BytesIO()
+                    async for chunk in communicate.stream():
+                        if chunk["type"] == "audio":
+                            mp3_io.write(chunk["data"])
+                    audio_bytes = mp3_io.getvalue()
+                    if audio_bytes and len(audio_bytes) > 200:
+                        elapsed = int((time.time() - start_time) * 1000)
+                        logger.info(f"[TTSEngine] Edge-TTS Male Voice ({edge_voice}) generated in {elapsed}ms ({len(audio_bytes)} bytes)")
+                        return audio_bytes
+                except Exception as ve:
+                    logger.warning(f"[TTSEngine] Edge-TTS voice {edge_voice} failed: {ve}. Trying next male voice...")
         except Exception as err:
-            logger.warning(f"[TTSEngine] Edge-TTS error: {err}. Trying gTTS fallback...")
+            logger.error(f"[TTSEngine] Edge-TTS error: {err}")
 
-        # 3. Last Resort Fallback: gTTS
-        try:
-            from gtts import gTTS
-            tts = gTTS(text=text_clean, lang='en', tld='co.uk')
-            gtts_io = io.BytesIO()
-            tts.write_to_fp(gtts_io)
-            audio_bytes = gtts_io.getvalue()
-            elapsed = int((time.time() - start_time) * 1000)
-            logger.info(f"[TTSEngine] gTTS fallback generated in {elapsed}ms ({len(audio_bytes)} bytes)")
-            return audio_bytes
-        except Exception as err:
-            logger.error(f"[TTSEngine] All TTS engines failed: {err}")
-            return b""
+        logger.error("[TTSEngine] All male TTS engines failed to generate audio stream.")
+        return b""
 
 # Global Singleton Instance
 tts_engine = TTSEngine()

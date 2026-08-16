@@ -77,6 +77,12 @@ async def bot_shield_and_caching_middleware(request: Request, call_next):
     
     response = await call_next(request)
     
+    # Inject Production Security Headers
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+
     # Add Cache-Control headers to static assets for optimized 304 browser caching
     if path.endswith((".js", ".css", ".png", ".jpg", ".jpeg", ".svg", ".pdf", ".ico")):
         response.headers["Cache-Control"] = "public, max-age=86400, must-revalidate"
@@ -660,8 +666,13 @@ async def stt_endpoint(file: UploadFile = File(...), raw_request: Request = None
         audio_bytes = await file.read()
         if not audio_bytes:
             raise HTTPException(status_code=400, detail="Empty audio file submitted.")
+        if len(audio_bytes) > 10 * 1024 * 1024: # 10MB Payload Bomb Protection
+            raise HTTPException(status_code=413, detail="Audio file exceeds 10MB payload limit.")
 
-        res = stt_engine.transcribe_audio_bytes(audio_bytes, filename=file.filename or "recording.webm")
+        # Non-blocking async thread execution for ultra-low latency STT inference
+        res = await asyncio.to_thread(
+            stt_engine.transcribe_audio_bytes, audio_bytes, filename=file.filename or "recording.webm"
+        )
         return res
     except HTTPException:
         raise
@@ -693,7 +704,11 @@ async def tts_endpoint(request: TTSRequest, raw_request: Request = None):
     if not audio_bytes:
         raise HTTPException(status_code=500, detail="TTS speech generation failed.")
 
-    return Response(content=audio_bytes, media_type="audio/mpeg")
+    return Response(
+        content=audio_bytes,
+        media_type="audio/mpeg",
+        headers={"Cache-Control": "public, max-age=3600, immutable"}
+    )
 
 
 # ── Direct Contact Form Endpoint (UAE PDPL & Pakistan PECA Compliant) ────────
@@ -720,9 +735,17 @@ async def contact_endpoint(request: ContactRequest, raw_request: Request):
         "message": "Thank you! Your message has been received securely. Anees will respond shortly."
     }
 
-# ── Mount Static Frontend when running outside Vercel (e.g. in Docker) ───────
+# ── Mount Static Frontend when running outside Vercel ───────────────
 ROOT_DIR = Path(__file__).parent.parent
 if not os.getenv("VERCEL") and (ROOT_DIR / "index.html").exists():
     from fastapi.staticfiles import StaticFiles
+    from starlette.exceptions import HTTPException as StarletteHTTPException
+
+    class NonAPIStaticFiles(StaticFiles):
+        async def get_response(self, path: str, scope):
+            if path.startswith("api/") or path == "api":
+                raise StarletteHTTPException(status_code=404, detail="API route passed to FastAPI router")
+            return await super().get_response(path, scope)
+
     # Mount frontend static directory on / for standalone container execution
-    app.mount("/", StaticFiles(directory=str(ROOT_DIR), html=True), name="static")
+    app.mount("/", NonAPIStaticFiles(directory=str(ROOT_DIR), html=True), name="static")

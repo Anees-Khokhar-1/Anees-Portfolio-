@@ -2,11 +2,11 @@
   "name": "Anees Munir Khokhar | AI Engineer",
   "short_name": "Anees AI",
   "description": "Portfolio of Anees Munir Khokhar, AI Engineer.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#0EA5E9",
   "icons": [
-    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }
   ]
 }
