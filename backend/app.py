@@ -77,9 +77,9 @@ async def bot_shield_and_caching_middleware(request: Request, call_next):
     
     response = await call_next(request)
     
-    # Inject Production Security Headers
+    # Inject Production Security Headers (Hugging Face iframe compatible)
     response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Content-Security-Policy"] = "frame-ancestors 'self' https://huggingface.co https://*.hf.space;"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
 
