@@ -1,6 +1,7 @@
 huggingface-hub==0.24.6
 fastapi>=0.110.0
 uvicorn>=0.30.0
+openai>=1.0.0
 groq>=0.11.0
 httpx>=0.24.0
 pydantic>=2.7.0

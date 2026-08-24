@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
-from groq import Groq, AsyncGroq
+from openai import OpenAI, AsyncOpenAI
 from backend.rag_engine import RAGEngine
 from backend.analytics import log_query, log_contact, purge_old_records
 
@@ -417,12 +417,93 @@ UNAUTHORIZED_OUTPUT_PHRASES = [
     "exact count to share"
 ]
 
-DEFAULT_FALLBACK_MODELS = [
+DEFAULT_OPENROUTER_MODELS = [
+    "google/gemini-2.0-flash-exp:free",
+    "google/gemini-2.0-flash-001",
+    "meta-llama/llama-3.3-70b-instruct",
+    "deepseek/deepseek-chat",
+    "qwen/qwen-2.5-72b-instruct",
+    "mistralai/mistral-7b-instruct:free"
+]
+
+DEFAULT_GROQ_MODELS = [
     "llama-3.3-70b-versatile",
     "llama-3.1-8b-instant",
     "llama3-70b-8192",
     "mixtral-8x7b-32768"
 ]
+
+def get_llm_clients():
+    """
+    Returns a list of tuple (client_instance, provider_name, models_list)
+    ordered by priority: OpenRouter API -> Groq API (if available).
+    """
+    clients = []
+    openrouter_key = os.getenv("OPENROUTER_API_KEY", "").strip()
+    groq_key = os.getenv("GROQ_API_KEY", "").strip()
+
+    if openrouter_key and openrouter_key != "sk-or-v1-your_openrouter_api_key_here":
+        try:
+            or_client = OpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=openrouter_key,
+                default_headers={
+                    "HTTP-Referer": "https://aneesportfolio.com",
+                    "X-Title": "Anees Portfolio AI Twin",
+                }
+            )
+            or_models = [os.getenv("OPENROUTER_MODEL", DEFAULT_OPENROUTER_MODELS[0])] + DEFAULT_OPENROUTER_MODELS[1:]
+            clients.append((or_client, "openrouter", or_models))
+        except Exception as e:
+            logger.warning(f"Could not init OpenRouter client: {e}")
+
+    if groq_key and groq_key != "gsk_your_api_key_here":
+        try:
+            from groq import Groq as GroqClient
+            groq_client = GroqClient(api_key=groq_key)
+            groq_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"]
+            clients.append((groq_client, "groq", groq_models))
+        except Exception as e:
+            logger.warning(f"Could not init Groq client: {e}")
+
+    return clients
+
+
+def get_async_llm_clients():
+    """
+    Returns a list of tuple (async_client_instance, provider_name, models_list)
+    ordered by priority: OpenRouter API -> Groq API (if available).
+    """
+    clients = []
+    openrouter_key = os.getenv("OPENROUTER_API_KEY", "").strip()
+    groq_key = os.getenv("GROQ_API_KEY", "").strip()
+
+    if openrouter_key and openrouter_key != "sk-or-v1-your_openrouter_api_key_here":
+        try:
+            or_client = AsyncOpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=openrouter_key,
+                default_headers={
+                    "HTTP-Referer": "https://aneesportfolio.com",
+                    "X-Title": "Anees Portfolio AI Twin",
+                }
+            )
+            or_models = [os.getenv("OPENROUTER_MODEL", DEFAULT_OPENROUTER_MODELS[0])] + DEFAULT_OPENROUTER_MODELS[1:]
+            clients.append((or_client, "openrouter", or_models))
+        except Exception as e:
+            logger.warning(f"Could not init Async OpenRouter client: {e}")
+
+    if groq_key and groq_key != "gsk_your_api_key_here":
+        try:
+            from groq import AsyncGroq as AsyncGroqClient
+            groq_client = AsyncGroqClient(api_key=groq_key)
+            groq_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"]
+            clients.append((groq_client, "groq", groq_models))
+        except Exception as e:
+            logger.warning(f"Could not init Async Groq client: {e}")
+
+    return clients
+
 
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest, raw_request: Request):
@@ -432,14 +513,6 @@ async def chat_endpoint(request: ChatRequest, raw_request: Request):
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Rate limit exceeded: Maximum 25 chat requests per minute allowed."
-        )
-
-    api_key = os.getenv("GROQ_API_KEY")
-    if not api_key or api_key == "gsk_your_api_key_here":
-        # Check if environment variable is missing
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Server configuration error: GROQ_API_KEY is not configured in environment variables."
         )
 
     # ── Layer 1: Pre-Flight Regex Firewall ───────────────────────────────────
@@ -470,106 +543,84 @@ async def chat_endpoint(request: ChatRequest, raw_request: Request):
             )
 
     try:
-        client = Groq(api_key=api_key)
-        start_time = time.time()  # Track response latency
-        # ── Senior Engineer RAG: Retrieve Top-4 Semantic Knowledge Chunks (Non-Blocking) ──
+        start_time = time.time()
         rag_engine = RAGEngine.get_instance(KNOWLEDGE_BASE)
         retrieved_chunks = await asyncio.to_thread(rag_engine.retrieve, request.message, 4)
         system_prompt = build_system_prompt(retrieved_chunks=retrieved_chunks)
 
-        # ── Senior Engineer Memory: Build Multi-Turn Messages Payload (Last 6 turns, max 600 chars) ──
         messages_payload = [{"role": "system", "content": system_prompt}]
         for turn in request.history[-6:]:
             if turn.role in ["user", "assistant"] and turn.content:
                 messages_payload.append({"role": turn.role, "content": turn.content[:600]})
         messages_payload.append({"role": "user", "content": request.message.strip()})
 
-        # ── Senior Engineer Resilience: Automatic Model Fallback Loop (Non-Blocking) ──
-        models_to_try = [os.getenv("GROQ_MODEL", DEFAULT_FALLBACK_MODELS[0])] + DEFAULT_FALLBACK_MODELS[1:]
-
+        clients = get_llm_clients()
         reply = None
         used_model = None
         last_error = None
 
-        for idx, model_name in enumerate(models_to_try):
-            try:
-                completion = await asyncio.to_thread(
-                    client.chat.completions.create,
-                    model=model_name,
-                    messages=messages_payload,
-                    temperature=0.6,
-                    max_tokens=512,
-                    top_p=0.9,
-                )
-                reply = completion.choices[0].message.content
-                used_model = model_name
-                break  # Success! Exit loop
-            except Exception as e:
-                err_str = str(e)
-                last_error = e
-                logger.warning(f"Model {model_name} failed ({err_str[:150]}...).")
-                # Adaptive Exponential Backoff & Jitter for rate-limits and transient errors
-                if any(k in err_str.lower() for k in ["429", "rate limit", "503", "service unavailable", "timeout", "overloaded"]):
-                    backoff_delay = min(1.5, 0.3 * (2 ** idx)) + (0.1 * (idx % 2))
-                    logger.info(f"Transient error detected. Applying {backoff_delay:.2f}s exponential backoff with jitter...")
-                    await asyncio.sleep(backoff_delay)
-                continue
+        for client_instance, provider_name, models_to_try in clients:
+            for idx, model_name in enumerate(models_to_try):
+                try:
+                    completion = await asyncio.to_thread(
+                        client_instance.chat.completions.create,
+                        model=model_name,
+                        messages=messages_payload,
+                        temperature=0.6,
+                        max_tokens=512,
+                        top_p=0.9,
+                    )
+                    reply = completion.choices[0].message.content
+                    used_model = f"{provider_name}:{model_name}"
+                    break
+                except Exception as e:
+                    err_str = str(e)
+                    last_error = e
+                    logger.warning(f"Provider {provider_name} model {model_name} failed ({err_str[:120]}...).")
+                    continue
+            if reply:
+                break
 
         if not reply:
-            logger.error(f"All fallback models exhausted! Last error: {last_error}")
-            reply = "I am currently experiencing high network traffic across my AI clusters! Please email Anees directly at aneesmunir1020@gmail.com or check his resume and projects on this dashboard."
-            used_model = "offline-fallback-mode"
+            logger.error(f"All LLM providers exhausted! Last error: {last_error}")
+            reply = f"Anees Munir Khokhar is an experienced AI Engineer specializing in Agentic AI systems, RAG pipelines (FAISS/ChromaDB), Fast-Whisper STT, and scalable FastAPI backends. You can reach out directly via email at aneesmunir1020@gmail.com or view his resume on this dashboard!"
+            used_model = "digital-twin-rag-fallback"
 
         # ── Layer 3: Post-Flight Output Audit & Clean Formatting Filter ──────
         lower_reply = reply.lower()
         if any(phrase in lower_reply for phrase in UNAUTHORIZED_OUTPUT_PHRASES):
-            print(f"🚨 Security Alert: Blocked out-of-character output -> {reply[:100]}...")
             reply = "I apologize, but that query falls outside my professional scope as Anees's AI Digital Twin! If you'd like to discuss software engineering, AI architecture, or Anees's background, I'm happy to help."
 
-        # Data Cleaning: Ensure numbered lists and bullet points always have double newlines for scannable UI rendering
         reply = re.sub(r'(?<!\n)\n?(\d+\.\s+\*\*|\-\s+\*\*)', r'\n\n\1', reply)
         reply = re.sub(r'\n{3,}', '\n\n', reply).strip()
 
-        # Log query telemetry for recruiter analytics (with actual latency)
         elapsed_ms = (time.time() - start_time) * 1000
-        log_query(client_ip, request.message, used_model or "llama-3.3-70b-versatile", elapsed_ms)
+        log_query(client_ip, request.message, used_model or "gemini-2.0-flash", elapsed_ms)
 
         return ChatResponse(
             reply=reply,
-            model=used_model or "llama-3.3-70b-versatile"
+            model=used_model or "gemini-2.0-flash"
         )
 
     except Exception as e:
         err_msg = str(e)
-        print(f"Groq API Error: {err_msg}")
-        if "429" in err_msg or "rate limit" in err_msg.lower():
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="All AI models are currently at peak daily capacity on the free tier! Please try again in a little while."
-            )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to communicate with AI engine: {err_msg}"
+        logger.error(f"Chat API Exception: {err_msg}")
+        return ChatResponse(
+            reply="Anees Munir Khokhar is an AI Engineer building production-grade agentic AI systems, RAG architectures, and computer vision apps. Contact Anees at aneesmunir1020@gmail.com for inquiries!",
+            model="digital-twin-fallback"
         )
 
 
-# ── SSE Streaming Chat Endpoint (Server-Sent Events) ─────────────────────────
+# ── SSE Streaming Chat Endpoint (Server-Sent Events via OpenRouter Gemini 2.0 Flash) ──
 @app.post("/api/chat/stream")
 async def chat_stream_endpoint(request: ChatRequest, raw_request: Request):
-    """Server-Sent Events (SSE) streaming endpoint for real-time token delivery."""
+    """Server-Sent Events (SSE) streaming endpoint powered by OpenRouter Gemini 2.0 Flash."""
     client_ip = raw_request.client.host if raw_request.client else "127.0.0.1"
     if is_rate_limited(client_ip):
         logger.warning(f"Rate limit exceeded for IP: {client_ip}")
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail="Rate limit exceeded: Maximum 25 chat requests per minute allowed."
-        )
-
-    api_key = os.getenv("GROQ_API_KEY")
-    if not api_key or api_key == "gsk_your_api_key_here":
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Server configuration error: GROQ_API_KEY is not configured in environment variables."
         )
 
     if is_prompt_injection(request.message):
@@ -602,40 +653,54 @@ async def chat_stream_endpoint(request: ChatRequest, raw_request: Request):
     messages.append({"role": "user", "content": request.message[:2000]})
 
     async def event_generator():
-        try:
-            async_client = AsyncGroq(api_key=api_key)
-            stream = await async_client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=messages,
-                temperature=0.6,
-                max_tokens=900,
-                stream=True
-            )
-            full_text = ""
-            async for chunk in stream:
-                content = chunk.choices[0].delta.content
-                if content:
-                    full_text += content
-                    escaped = content.replace("\n", "\\n")
-                    yield f"data: {escaped}\n\n"
+        async_clients = get_async_llm_clients()
+        stream_success = False
 
-            elapsed_ms = (time.time() - start_t) * 1000
-            log_query(client_ip, request.message, "llama-3.3-70b-versatile-stream", elapsed_ms)
+        for async_client_inst, provider_name, models_to_try in async_clients:
+            for target_model in models_to_try:
+                try:
+                    stream = await async_client_inst.chat.completions.create(
+                        model=target_model,
+                        messages=messages,
+                        temperature=0.6,
+                        max_tokens=900,
+                        stream=True
+                    )
+                    full_text = ""
+                    async for chunk in stream:
+                        if chunk.choices and len(chunk.choices) > 0 and chunk.choices[0].delta and chunk.choices[0].delta.content:
+                            content = chunk.choices[0].delta.content
+                            full_text += content
+                            escaped = content.replace("\n", "\\n")
+                            yield f"data: {escaped}\n\n"
 
-            # Emit telemetry metadata event for Agentic Mind Mode
-            metadata = json.dumps({
-                "rag_engine": rag_engine.store.engine_type,
-                "rag_top_score": round(rag_results[0]["score"], 3) if rag_results else 0,
-                "rag_top_title": rag_results[0].get("title", "N/A") if rag_results else "N/A",
-                "security_check": "PASS",
-                "model": "llama-3.3-70b-versatile",
-                "latency_ms": round(elapsed_ms, 1)
-            })
-            yield f"event: metadata\ndata: {metadata}\n\n"
-            yield "data: [DONE]\n\n"
-        except Exception as e:
-            logger.error(f"Streaming error: {e}")
-            yield f"data: Error processing request: {str(e)}\n\n"
+                    elapsed_ms = (time.time() - start_t) * 1000
+                    log_query(client_ip, request.message, f"{provider_name}:{target_model}-stream", elapsed_ms)
+
+                    metadata = json.dumps({
+                        "rag_engine": rag_engine.store.engine_type,
+                        "rag_top_score": round(rag_results[0]["score"], 3) if rag_results else 0,
+                        "rag_top_title": rag_results[0].get("title", "N/A") if rag_results else "N/A",
+                        "security_check": "PASS",
+                        "provider": provider_name,
+                        "model": target_model,
+                        "latency_ms": round(elapsed_ms, 1)
+                    })
+                    yield f"event: metadata\ndata: {metadata}\n\n"
+                    yield "data: [DONE]\n\n"
+                    stream_success = True
+                    break
+                except Exception as e:
+                    logger.warning(f"Streaming error on {provider_name}:{target_model}: {e}")
+                    continue
+            if stream_success:
+                break
+
+        if not stream_success:
+            logger.warning("Streaming fallback triggered.")
+            fallback_text = "Anees Munir Khokhar is an AI Engineer specializing in Agentic AI systems, RAG applications (Easy-Study RAG, FAISS), Computer Vision (YOLO/OpenCV), and FastAPI backends. Reach out directly at aneesmunir1020@gmail.com!"
+            escaped_fb = fallback_text.replace("\n", "\\n")
+            yield f"data: {escaped_fb}\n\n"
             yield "data: [DONE]\n\n"
 
     return StreamingResponse(

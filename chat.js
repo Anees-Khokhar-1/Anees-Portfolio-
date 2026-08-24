@@ -161,100 +161,130 @@ document.addEventListener('DOMContentLoaded', () => {
     const typingEl = appendTypingIndicator();
     scrollToBottom();
 
+    let streamingWorked = false;
+
+    // 1. Try Real-Time SSE Token Streaming
     try {
-      // 1. Try Real-Time SSE Token Streaming
       const res = await fetch(STREAM_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, history: conversationHistory }),
       });
 
-      if (!res.ok || !res.body) {
-        throw new Error('Streaming unavailable, falling back to standard JSON API');
-      }
+      if (res.ok && res.body) {
+        if (typingEl) typingEl.remove();
 
-      typingEl.remove();
-
-      // Create AI bubble for progressive streaming fill
-      const aiBubble = document.createElement('div');
-      aiBubble.className = 'chat-bubble ai';
-      aiBubble.innerHTML = `
-        <div class="bubble-avatar"><img src="assets/avatar.png" alt="AI" /></div>
-        <div class="bubble-content">
-          <div class="ai-formatted-content"></div>
-        </div>
-      `;
-      messages.appendChild(aiBubble);
-      const contentEl = aiBubble.querySelector('.ai-formatted-content');
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let fullText = '';
-      let metadataPayload = null;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
-        let isMetaEvent = false;
-        for (const line of lines) {
-          if (line.startsWith('event: metadata')) {
-            isMetaEvent = true;
-            continue;
-          }
-          if (line.startsWith('data: ')) {
-            const token = line.slice(6);
-            if (token === '[DONE]') break;
-            if (isMetaEvent) {
-              try { metadataPayload = JSON.parse(token); } catch(e) {}
-              isMetaEvent = false;
-              continue;
-            }
-            const unescapedToken = token.replace(/\\n/g, '\n');
-            fullText += unescapedToken;
-            contentEl.innerHTML = formatAIMessage(fullText);
-            scrollToBottom();
-          }
-        }
-      }
-
-      const timestamp = getCurrentTimestamp();
-      const timeEl = document.createElement('span');
-      timeEl.className = 'bubble-time';
-      timeEl.textContent = timestamp;
-      aiBubble.querySelector('.bubble-content').appendChild(timeEl);
-
-      // Render Agentic Mind Mode Trace (if toggle is ON and metadata received)
-      if (mindModeToggle && mindModeToggle.checked && metadataPayload) {
-        const traceEl = document.createElement('div');
-        traceEl.className = 'mind-trace';
-        traceEl.innerHTML = `
-          <button class="trace-toggle" onclick="this.parentElement.classList.toggle('expanded')">
-            <span>⚙️ Agentic Reasoning Trace</span>
-            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="trace-body">
-            <div class="trace-step trace-pass"><span class="trace-time">[0ms]</span> 🛡️ Security Check: <strong>${metadataPayload.security_check || 'PASS'}</strong></div>
-            <div class="trace-step trace-rag"><span class="trace-time">[~38ms]</span> 🔍 ${metadataPayload.rag_engine || 'FAISS'} Retrieval: <strong>"${metadataPayload.rag_top_title || 'N/A'}"</strong> (score: ${metadataPayload.rag_top_score || '—'})</div>
-            <div class="trace-step trace-engine"><span class="trace-time">[${metadataPayload.latency_ms || '?'}ms]</span> ⚡ Engine: <strong>${metadataPayload.model || 'llama-3.3-70b'}</strong> · ${metadataPayload.latency_ms || '?'}ms total</div>
+        // Create AI bubble for progressive streaming fill
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'chat-bubble ai';
+        aiBubble.innerHTML = `
+          <div class="bubble-avatar"><img src="assets/avatar.png" alt="AI" /></div>
+          <div class="bubble-content">
+            <div class="ai-formatted-content"></div>
           </div>
         `;
-        aiBubble.querySelector('.bubble-content').appendChild(traceEl);
+        messages.appendChild(aiBubble);
+        const contentEl = aiBubble.querySelector('.ai-formatted-content');
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText = '';
+        let metadataPayload = null;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+          let isMetaEvent = false;
+          for (const line of lines) {
+            if (line.startsWith('event: metadata')) {
+              isMetaEvent = true;
+              continue;
+            }
+            if (line.startsWith('data: ')) {
+              const token = line.slice(6);
+              if (token === '[DONE]') break;
+              if (isMetaEvent) {
+                try { metadataPayload = JSON.parse(token); } catch(e) {}
+                isMetaEvent = false;
+                continue;
+              }
+              const unescapedToken = token.replace(/\\n/g, '\n');
+              fullText += unescapedToken;
+              contentEl.innerHTML = formatAIMessage(fullText);
+              scrollToBottom();
+            }
+          }
+        }
+
+        if (fullText.trim()) {
+          streamingWorked = true;
+
+          const timestamp = getCurrentTimestamp();
+          const timeEl = document.createElement('span');
+          timeEl.className = 'bubble-time';
+          timeEl.textContent = timestamp;
+          aiBubble.querySelector('.bubble-content').appendChild(timeEl);
+
+          // Render Agentic Mind Mode Trace (if toggle is ON and metadata received)
+          if (mindModeToggle && mindModeToggle.checked && metadataPayload) {
+            const traceEl = document.createElement('div');
+            traceEl.className = 'mind-trace';
+            traceEl.innerHTML = `
+              <button class="trace-toggle" onclick="this.parentElement.classList.toggle('expanded')">
+                <span>⚙️ Agentic Reasoning Trace</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="trace-body">
+                <div class="trace-step trace-pass"><span class="trace-time">[0ms]</span> 🛡️ Security Check: <strong>${metadataPayload.security_check || 'PASS'}</strong></div>
+                <div class="trace-step trace-rag"><span class="trace-time">[~38ms]</span> 🔍 ${metadataPayload.rag_engine || 'FAISS'} Retrieval: <strong>"${metadataPayload.rag_top_title || 'N/A'}"</strong> (score: ${metadataPayload.rag_top_score || '—'})</div>
+                <div class="trace-step trace-engine"><span class="trace-time">[${metadataPayload.latency_ms || '?'}ms]</span> ⚡ Engine: <strong>${metadataPayload.model || 'gemini-2.0-flash'}</strong> · ${metadataPayload.latency_ms || '?'}ms total</div>
+              </div>
+            `;
+            aiBubble.querySelector('.bubble-content').appendChild(traceEl);
+          }
+
+          conversationHistory.push({ role: 'user', content: text });
+          conversationHistory.push({ role: 'assistant', content: fullText });
+          if (statusEl) statusEl.innerHTML = `<span class="pulse-dot-sm"></span>Online`;
+
+          // Voice Assistant TTS Response (if Voice toggle is ON)
+          speakText(fullText);
+        } else {
+          aiBubble.remove();
+        }
       }
-
-      conversationHistory.push({ role: 'user', content: text });
-      conversationHistory.push({ role: 'assistant', content: fullText });
-      if (statusEl) statusEl.innerHTML = `<span class="pulse-dot-sm"></span>Online`;
-
-      // Voice Assistant TTS Response (if Voice toggle is ON)
-      speakText(fullText);
-
     } catch (err) {
-      // Streaming failed — show immediate error (no sequential double-call)
-      if (typingEl) typingEl.remove();
-      console.warn('[Chat] Stream request failed:', err.message);
-      appendBubble('ai', 'Connection issue — please refresh and try again, or email Anees at aneesmunir1020@gmail.com.');
+      console.warn('[Chat] Streaming request failed:', err.message);
+    }
+
+    // 2. Fallback to Standard Non-Streaming Endpoint (/api/chat) if streaming failed
+    if (!streamingWorked) {
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, history: conversationHistory }),
+        });
+
+        if (typingEl && typingEl.parentElement) typingEl.remove();
+
+        if (res.ok) {
+          const data = await res.json();
+          const replyText = data.reply || "Great to connect! How can I assist you with Anees's portfolio?";
+          appendBubble('ai', replyText);
+          conversationHistory.push({ role: 'user', content: text });
+          conversationHistory.push({ role: 'assistant', content: replyText });
+          speakText(replyText);
+        } else {
+          appendBubble('ai', 'Anees Munir Khokhar is an AI Engineer building production-grade agentic AI systems, RAG architectures, and computer vision apps. Contact Anees directly at aneesmunir1020@gmail.com!');
+        }
+      } catch (jsonErr) {
+        if (typingEl && typingEl.parentElement) typingEl.remove();
+        console.warn('[Chat] Standard JSON API request failed:', jsonErr.message);
+        appendBubble('ai', 'Anees Munir Khokhar is an AI Engineer building production-grade agentic AI systems, RAG architectures, and computer vision apps. Contact Anees directly at aneesmunir1020@gmail.com!');
+      }
     }
 
     input.disabled = false;

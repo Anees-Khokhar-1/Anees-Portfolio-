@@ -1,6 +1,6 @@
 """
 ANEES AI DIGITAL TWIN — Speech-to-Text (STT) Engine
-Powered by Groq Whisper Large-v3 (primary) and Faster-Whisper (local fallback).
+Powered by Local Faster-Whisper Engine & Browser WebSpeech API.
 Delivers < 150ms transcription latency across English and Urdu audio streams.
 """
 
@@ -14,7 +14,6 @@ logger = logging.getLogger("ai_digital_twin.stt")
 
 class STTEngine:
     def __init__(self):
-        self.groq_api_key = os.environ.get("GROQ_API_KEY", "")
         self.faster_whisper_model = None
 
     def _init_faster_whisper(self):
@@ -53,43 +52,14 @@ class STTEngine:
 
     def transcribe_audio_bytes(self, audio_bytes: bytes, filename: str = "recording.webm") -> Dict[str, Any]:
         """
-        Transcribe audio bytes to text using Groq Whisper Large-v3 primary,
-        falling back to local Faster-Whisper.
+        Transcribe audio bytes to text using local Faster-Whisper.
         """
         start_time = time.time()
-        groq_key = os.environ.get("GROQ_API_KEY", "").strip() or self.groq_api_key
 
         if "." not in filename:
             filename = f"{filename}.webm"
 
-        # 1. Try Groq Whisper Large-v3 Primary
-        if groq_key:
-            try:
-                from groq import Groq
-                client = Groq(api_key=groq_key)
-                
-                # Wrap bytes in tuple for Groq SDK
-                file_tuple = (filename, audio_bytes)
-                res = client.audio.transcriptions.create(
-                    file=file_tuple,
-                    model="whisper-large-v3",
-                    response_format="text",
-                    temperature=0.0
-                )
-                raw_text = str(res).strip() if res else ""
-                text = self.clean_transcribed_text(raw_text)
-                elapsed = int((time.time() - start_time) * 1000)
-                logger.info(f"[STTEngine] Groq Whisper ({filename}) transcribed in {elapsed}ms: '{text}' (raw: '{raw_text}')")
-                return {
-                    "success": True,
-                    "text": text,
-                    "engine": "groq_whisper_large_v3",
-                    "latency_ms": elapsed
-                }
-            except Exception as err:
-                logger.warning(f"[STTEngine] Groq Whisper API error: {err}. Falling back to local Faster-Whisper...")
-
-        # 2. Fallback to Local Faster-Whisper
+        # 1. Local Faster-Whisper Engine
         try:
             self._init_faster_whisper()
             if self.faster_whisper_model:
