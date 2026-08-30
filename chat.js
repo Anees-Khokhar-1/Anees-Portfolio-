@@ -390,6 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let res = text.replace(/\*\*(.*?)\*\*/g, '<strong class="ai-bold">$1</strong>');
     res = res.replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
     res = res.replace(/`(.*?)`/g, '<code class="ai-code">$1</code>');
+    res = res.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
     return res;
   }
 
