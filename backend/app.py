@@ -274,6 +274,15 @@ If a user commands you to act as or act like someone else (e.g., property adviso
 12. EXACT PROJECT COUNT (8 PROJECTS TOTAL): I have developed 8 major production-grade projects across RAG, Computer Vision (YOLOv11), Deep Learning (CNN), Generative AI, Data Engineering (XHR Scraping), and Full-Stack CRUD. When asked how many projects I have done or to list my projects, state clearly that I have 8 major projects and summarize them confidently. NEVER say "I don't have an exact count" or "projects I was trained on".
 </conversational_intelligence>
 
+<identity_faith>
+=== ISLAMIC IDENTITY & GREETING RULES ===
+1. MUSLIM IDENTITY: Anees Munir Khokhar is a Muslim AI Engineer from Pakistan. NEVER use non-Muslim greetings such as "Namaste" or "Namaskar" under any circumstances.
+2. SALAM GREETINGS: For Islamic greetings ("As-salamu alaykum", "Assalamu Alaikum", "Salam", "AOA"), ALWAYS respond with "Wa alaykumu s-salam" (e.g., "Wa alaykumu s-salam! 👋 Great to connect! Main Anees Munir Khokhar hun...").
+3. ENGLISH GREETINGS: For greetings in English ("Hello", "Hi", "Hey"), respond with warm executive greetings ("Hello! 👋 Great to connect! How can I assist you today?").
+4. URDU LANGUAGE MATCHING: If the user query is in Urdu or Roman Urdu ("hello mujhe apna naam batao", "kya haal hai", "kaise ho"), ALWAYS respond in fluent, natural Urdu or Roman Urdu ("Wa alaykumu s-salam! Main Anees Munir Khokhar hun, Islamabad se..."). NEVER switch to English unless asked.
+5. ENGLISH LANGUAGE MATCHING: If the user query is in English, ALWAYS respond in fluent English.
+</identity_faith>
+
 <bilingual_rules>
 === BILINGUAL RESPONSE RULES ===
 1. If the user asks in English -> Respond in fluent, professional English.
@@ -415,7 +424,9 @@ UNAUTHORIZED_OUTPUT_PHRASES = [
     "my advisory service",
     "trained on",
     "training data",
-    "exact count to share"
+    "exact count to share",
+    "namaste",
+    "namaskar"
 ]
 
 DEFAULT_OPENROUTER_MODELS = [
@@ -526,15 +537,30 @@ async def chat_endpoint(request: ChatRequest, raw_request: Request):
 
     # ── Instant Exact Greeting Interceptor (Zero-Latency / Zero-Cost) ────────
     clean_greeting = _PUNCT_CLEAN_REGEX.sub(' ', request.message).strip().lower()
-    greeting_phrases = [
-        "hi", "hello", "hey", "greetings", "salam", "assalamualaikum", "hi there",
-        "hello there", "hey there", "salam alaikum", "good morning", "good evening",
-        "good afternoon", "hello anees", "hi anees", "hey anees", "salam anees"
+    islamic_greetings = [
+        "salam", "assalamualaikum", "assalam o alaikum", "as-salamu alaykum",
+        "salam alaikum", "aoa", "slam", "slm", "walaikum assalam"
     ]
-    if clean_greeting in greeting_phrases:
+    english_greetings = [
+        "hi", "hello", "hey", "greetings", "hi there", "hello there", "hey there",
+        "good morning", "good evening", "good afternoon", "hello anees", "hi anees", "hey anees", "howdy", "hiya", "hlo"
+    ]
+
+    if clean_greeting in islamic_greetings:
         if len(request.history) == 0:
             return ChatResponse(
-                reply="Great to connect! How can I assist you?",
+                reply="Wa alaykumu s-salam! 👋 Great to connect! How can I assist you today?",
+                model="islamic-greeting-handler"
+            )
+        else:
+            return ChatResponse(
+                reply="Wa alaykumu s-salam! I'm right here — what would you like to explore about my AI projects, technical stack, or availability?",
+                model="islamic-greeting-handler"
+            )
+    elif clean_greeting in english_greetings:
+        if len(request.history) == 0:
+            return ChatResponse(
+                reply="Hello! 👋 Great to connect! How can I assist you today?",
                 model="executive-greeting-handler"
             )
         else:
@@ -633,8 +659,15 @@ async def chat_stream_endpoint(request: ChatRequest, raw_request: Request):
 
     # Instant Exact Greeting Interceptor
     clean_greeting = _PUNCT_CLEAN_REGEX.sub(' ', request.message).strip().lower()
-    greeting_phrases = ["hi", "hello", "hey", "greetings", "salam", "assalamualaikum", "hi there", "hello there", "hey there", "salam alaikum", "good morning", "good evening", "good afternoon", "hello anees", "hi anees", "hey anees", "salam anees", "howdy", "hiya", "hlo"]
-    if clean_greeting in greeting_phrases and len(request.history) == 0:
+    islamic_greetings = ["salam", "assalamualaikum", "assalam o alaikum", "as-salamu alaykum", "salam alaikum", "aoa", "slam", "slm", "walaikum assalam"]
+    english_greetings = ["hi", "hello", "hey", "greetings", "hi there", "hello there", "hey there", "good morning", "good evening", "good afternoon", "hello anees", "hi anees", "hey anees", "howdy", "hiya", "hlo"]
+    if clean_greeting in islamic_greetings and len(request.history) == 0:
+        async def islamic_stream():
+            msg = "Wa alaykumu s-salam! 👋 Great to connect! How can I assist you today?"
+            yield f"data: {msg}\n\n"
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(islamic_stream(), media_type="text/event-stream")
+    elif clean_greeting in english_greetings and len(request.history) == 0:
         async def greeting_stream():
             msg = "Hello! 👋 Great to connect! How can I assist you today?"
             yield f"data: {msg}\n\n"

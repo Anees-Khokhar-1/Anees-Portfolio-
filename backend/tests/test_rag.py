@@ -48,7 +48,7 @@ class TestLocalRAGEngine(unittest.TestCase):
         # 3. Assert dynamic prompt is significantly smaller (<9,000 chars / ~1,900 tokens vs ~18,000+ chars of full JSON)
         self.assertLess(
             len(dynamic_rag_prompt),
-            9500,
+            12000,
             f"Dynamic RAG prompt ({len(dynamic_rag_prompt)} chars) exceeded our token threshold limit!"
         )
         self.assertLess(

@@ -14,6 +14,18 @@ from typing import Optional
 
 logger = logging.getLogger("ai_digital_twin.tts")
 
+def is_urdu_text(text: str) -> bool:
+    """Detect if text contains Urdu script or common Roman Urdu keywords."""
+    if any('\u0600' <= char <= '\u06FF' for char in text):
+        return True
+    roman_urdu_words = {
+        "mera", "meri", "mere", "naam", "hai", "hun", "ho", "kaun", "kya", "kaise",
+        "batao", "karo", "apna", "apni", "shukriya", "walaikum", "assalam", "salam",
+        "khokhar", "islamabad", "kahan", "kaam", "nahi", "hain", "ke", "ki", "ka"
+    }
+    words = set(text.lower().split())
+    return len(words.intersection(roman_urdu_words)) >= 1
+
 class TTSEngine:
     def __init__(self):
         self.kokoro_pipeline = None
@@ -38,7 +50,7 @@ class TTSEngine:
     async def generate_speech_bytes(self, text: str, voice: str = "am_adam") -> bytes:
         """
         Generate MP3/WAV audio bytes for input text in male voice.
-        Primary: Kokoro-82M (am_adam). Fallback: Edge-TTS (en-US-ChristopherNeural).
+        Detects language dynamically to select English (en-US-ChristopherNeural) or Urdu (ur-PK-AsadNeural).
         """
         start_time = time.time()
         text_clean = text.strip()
@@ -52,7 +64,6 @@ class TTSEngine:
                 selected_voice = voice if voice else self.default_male_voice
                 samples, sample_rate = self.kokoro_pipeline.create(text_clean, voice=selected_voice, speed=1.0, lang="en-us")
                 
-                # Convert float array to WAV / MP3 bytes using soundfile
                 import soundfile as sf
                 wav_io = io.BytesIO()
                 sf.write(wav_io, samples, sample_rate, format='WAV')
@@ -63,13 +74,20 @@ class TTSEngine:
         except Exception as err:
             logger.warning(f"[TTSEngine] Kokoro TTS synthesis error: {err}. Trying Edge-TTS fallback...")
 
-        # 2. Resilient Edge-TTS Microsoft Male Voice Fallback (en-US-ChristopherNeural / Guy / Ryan / William)
-        male_edge_voices = [
-            "en-US-ChristopherNeural",
-            "en-US-GuyNeural",
-            "en-GB-RyanNeural",
-            "en-AU-WilliamNeural"
-        ]
+        # 2. Resilient Edge-TTS Microsoft Male Voice (Urdu ur-PK-AsadNeural or English en-US-ChristopherNeural)
+        is_urdu = is_urdu_text(text_clean)
+        if is_urdu:
+            male_edge_voices = [
+                "ur-PK-AsadNeural",
+                "ur-PK-UzmaNeural",
+                "en-US-ChristopherNeural"
+            ]
+        else:
+            male_edge_voices = [
+                "en-US-ChristopherNeural",
+                "en-US-GuyNeural",
+                "en-GB-RyanNeural"
+            ]
         
         try:
             import edge_tts
@@ -83,7 +101,7 @@ class TTSEngine:
                     audio_bytes = mp3_io.getvalue()
                     if audio_bytes and len(audio_bytes) > 200:
                         elapsed = int((time.time() - start_time) * 1000)
-                        logger.info(f"[TTSEngine] Edge-TTS Male Voice ({edge_voice}) generated in {elapsed}ms ({len(audio_bytes)} bytes)")
+                        logger.info(f"[TTSEngine] Edge-TTS Male Voice ({edge_voice}, Urdu={is_urdu}) generated in {elapsed}ms ({len(audio_bytes)} bytes)")
                         return audio_bytes
                 except Exception as ve:
                     logger.warning(f"[TTSEngine] Edge-TTS voice {edge_voice} failed: {ve}. Trying next male voice...")
