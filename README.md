@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: Anees AI Digital Twin Portfolio
 emoji: ⚡
@@ -152,3 +153,63 @@ python -m unittest discover -s backend/tests -v
 - **Location:** Islamabad, Pakistan
 - **Email:** aneesmunir1020@gmail.com
 - **License:** [MIT License](LICENSE)
+=======
+# Anees Munir Khokhar Portfolio
+
+Static, responsive portfolio for a Full-Stack AI Engineer. The site is designed for free deployment on Vercel and has no build step, backend, database, or paid dependency.
+
+## Project structure
+
+```text
+index.html          Main page markup, modals, and SEO metadata
+style.css           Layout, animation, glassmorphism, and responsive styling
+script.js           Modal system, ask-bar routing, parallax, and copy-to-clipboard
+favicon.svg         Browser tab icon
+site.webmanifest    PWA/site metadata
+robots.txt          Search crawler rules
+vercel.json         Static hosting config and security headers
+assets/
+  avatar.png        Dashboard avatar image
+  avatar.svg        SVG fallback avatar
+  profile.jpg       Profile photo for About Me modal
+  Anees.pdf         Downloadable resume PDF
+```
+
+## Run locally
+
+```powershell
+cd "D:\Anees portfolio"
+python -m http.server 8000 --bind 127.0.0.1
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000/
+```
+
+Do not open `index.html` directly with `file://`; some browser features require a local server.
+
+## Deploy free on Vercel
+
+1. Create a GitHub repository.
+2. Upload all project files.
+3. Go to [vercel.com](https://vercel.com) and import the repository.
+4. Choose framework preset **Other**.
+5. Leave build command and output directory **empty**.
+6. Deploy.
+
+Vercel will serve `index.html` as the entry point with the security headers defined in `vercel.json`.
+
+## Update resume
+
+Replace the file when the resume changes:
+
+```text
+assets/Anees.pdf
+```
+
+Keep the same filename so all portfolio download links continue to work.
+
+Never commit company secrets, credentials, private customer data, or confidential project material.
+>>>>>>> origin/version-2.0

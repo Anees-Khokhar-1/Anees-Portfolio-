@@ -1,12 +1,17 @@
 /**
  * ANEES MUNIR KHOKHAR — AI PORTFOLIO DASHBOARD
+<<<<<<< HEAD
  * Vanilla JS: Modal system, Ask routing, Toast notifications, keyboard & backdrop close
+=======
+ * Vanilla JS: Modal system, Ask routing, keyboard & backdrop close
+>>>>>>> origin/version-2.0
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initCardModals();
   initAskRouting();
   initModalClose();
+<<<<<<< HEAD
   initGlobalDelegation();
   initScrollProgress();
   initHeroVoiceRecorder();
@@ -48,6 +53,15 @@ const overlay  = document.getElementById('modalOverlay');
 const shell    = document.getElementById('modalShell');
 const body     = document.getElementById('modalBody');
 const closeBtn = document.getElementById('modalClose');
+=======
+});
+
+/* ── References ─────────────────────────────────────────────────────────── */
+const overlay = document.getElementById('modalOverlay');
+const shell   = document.getElementById('modalShell');
+const body    = document.getElementById('modalBody');
+const closeBtn= document.getElementById('modalClose');
+>>>>>>> origin/version-2.0
 
 /* ── 1. OPEN MODAL BY CARD CLICK ────────────────────────────────────────── */
 function initCardModals() {
@@ -60,6 +74,7 @@ function initCardModals() {
 }
 
 /* ── 2. ASK-ME-ANYTHING INPUT ROUTING ───────────────────────────────────── */
+<<<<<<< HEAD
 const ROUTE_KEYWORDS = {
   resume:   ['resume', 'cv', 'download', 'pdf'],
   projects: ['project', 'projects', 'work', 'portfolio', 'apps', 'build', 'built'],
@@ -69,20 +84,26 @@ const ROUTE_KEYWORDS = {
   me:       ['about', 'me', 'profile', 'who are you', 'information', 'bio', 'intro']
 };
 
+=======
+>>>>>>> origin/version-2.0
 function initAskRouting() {
   const form  = document.getElementById('askForm');
   const input = document.getElementById('askInput');
   if (!form || !input) return;
 
+<<<<<<< HEAD
   function hit(str, words) {
     return words.some(w => str.includes(w));
   }
 
+=======
+>>>>>>> origin/version-2.0
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const q = input.value.trim().toLowerCase();
     if (!q) return;
 
+<<<<<<< HEAD
     // Natural-language questions (>3 words) always go to the AI chatbot
     const wordCount = q.split(/\s+/).length;
     if (wordCount > 3) {
@@ -135,6 +156,50 @@ function initModalClose() {
 let isModalHistoryActive = false;
 
 function openModal(id, pushHistory = true) {
+=======
+    if (hit(q, ['resume','cv','download','pdf'])) {
+      openModal('resume');
+      return;
+    }
+
+    let target = 'me'; // default
+
+    if      (hit(q, ['project','projects','work','portfolio','apps','build','built']))         target = 'projects';
+    else if (hit(q, ['skill','skills','technology','tech stack','tools','backend','database','devops'])) target = 'skills';
+    else if (hit(q, ['fun','hobbies','hobby','interests','travel','hiking','cooking',
+                      'badminton','gardening','reading','mother']))                             target = 'fun';
+    else if (hit(q, ['contact','email','phone','linkedin','hire']))                            target = 'contact';
+    else if (hit(q, ['about','me','profile','who are you','information','bio','intro']))        target = 'me';
+
+    openModal(target);
+  });
+
+  function hit(str, words) {
+    return words.some(w => str.includes(w));
+  }
+}
+
+/* ── 3. CLOSE MODAL LOGIC ───────────────────────────────────────────────── */
+function initModalClose() {
+  // Close button
+  closeBtn.addEventListener('click', closeModal);
+
+  // Click backdrop (outside modal-shell)
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  // ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) {
+      closeModal();
+    }
+  });
+}
+
+/* ── OPEN / CLOSE HELPERS ───────────────────────────────────────────────── */
+function openModal(id) {
+>>>>>>> origin/version-2.0
   const tpl = document.getElementById('tpl-' + id);
   if (!tpl) return;
 
@@ -150,6 +215,7 @@ function openModal(id, pushHistory = true) {
 
   // Scroll modal body to top
   body.scrollTop = 0;
+<<<<<<< HEAD
 
   // Push history state so mobile swipe-back & browser back button close modal instead of exiting site
   if (pushHistory) {
@@ -311,6 +377,56 @@ window.copyToClipboard = function(text, btn) {
       }, 1500);
     }
     showToast('Copied to clipboard!');
+=======
+}
+
+function closeModal() {
+  overlay.classList.remove('open');
+  document.body.classList.remove('modal-open');
+  shell.removeAttribute('data-active');
+
+  // Clear content after animation finishes
+  setTimeout(() => { body.innerHTML = ''; }, 350);
+}
+
+/* ── EVENT DELEGATION & PARALLAX ────────────────────────────────────────── */
+// Event delegation for copy buttons inside modals
+body.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-copy]');
+  if (!btn) return;
+  const val = btn.getAttribute('data-copy');
+  if (val) copyToClipboard(val, btn);
+});
+
+// Subtle desktop mouse parallax on background word
+window.addEventListener('mousemove', (e) => {
+  const bgWord = document.getElementById('bgWord');
+  if (!bgWord || window.innerWidth <= 700) return;
+  const x = (e.clientX / window.innerWidth - 0.5) * 22; // -11px to +11px
+  const y = (e.clientY / window.innerHeight - 0.5) * 16; // -8px to +8px
+  requestAnimationFrame(() => {
+    bgWord.style.transform = `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), 0)`;
+  });
+});
+
+/* ── SAAS COPY TO CLIPBOARD HELPER ──────────────────────────────────────── */
+window.copyToClipboard = function(text, btn) {
+  if (!text || !btn) return;
+
+  const copyAction = () => {
+    btn.classList.add('copied');
+    const origHtml = btn.innerHTML;
+    if (btn.classList.contains('small-copy-btn')) {
+      btn.innerText = 'Copied!';
+    } else {
+      btn.innerHTML = `<svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>`;
+    }
+
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = origHtml;
+    }, 1500);
+>>>>>>> origin/version-2.0
   };
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -318,7 +434,11 @@ window.copyToClipboard = function(text, btn) {
   } else {
     fallbackCopy(text, copyAction);
   }
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> origin/version-2.0
 
 function fallbackCopy(text, onSuccess) {
   const ta = document.createElement('textarea');
@@ -332,6 +452,7 @@ function fallbackCopy(text, onSuccess) {
   } catch(err) {}
   document.body.removeChild(ta);
 }
+<<<<<<< HEAD
 
 function showToast(msg) {
   let container = document.querySelector('.toast-container');
@@ -353,3 +474,5 @@ function showToast(msg) {
     setTimeout(() => toast.remove(), 300);
   }, 2200);
 }
+=======
+>>>>>>> origin/version-2.0

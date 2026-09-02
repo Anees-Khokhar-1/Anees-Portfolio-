@@ -2,11 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+<<<<<<< HEAD
   "rewrites": [
     { "source": "/chat", "destination": "/chat.html" },
     { "source": "/resume", "destination": "/resume.html" },
     { "source": "/privacy", "destination": "/privacy.html" }
   ],
+=======
+>>>>>>> origin/version-2.0
   "headers": [
     {
       "source": "/(.*)",
@@ -37,7 +40,11 @@
         },
         {
           "key": "Content-Security-Policy",
+<<<<<<< HEAD
           "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self'; connect-src 'self' http://127.0.0.1:7860 http://localhost:7860 https://*.hf.space; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
+=======
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
+>>>>>>> origin/version-2.0
         }
       ]
     },

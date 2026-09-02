@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+<<<<<<< HEAD
 
 Sitemap: https://aneesportfolio.com/sitemap.xml
+=======
+>>>>>>> origin/version-2.0
