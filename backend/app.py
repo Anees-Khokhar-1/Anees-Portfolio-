@@ -688,17 +688,18 @@ async def chat_stream_endpoint(request: ChatRequest, raw_request: Request):
             yield "data: [DONE]\n\n"
         return StreamingResponse(off_topic_stream(), media_type="text/event-stream")
 
-    # Instant Exact Greeting Interceptor
-    clean_greeting = _PUNCT_CLEAN_REGEX.sub(' ', request.message).strip().lower()
-    islamic_greetings = ["salam", "assalamualaikum", "assalam o alaikum", "as-salamu alaykum", "salam alaikum", "aoa", "slam", "slm", "walaikum assalam"]
+    # ── Instant Exact Greeting Interceptor ────────────────────────────────────
+    clean_msg = _PUNCT_CLEAN_REGEX.sub(' ', request.message).strip().lower()
+    islamic_greetings = ["salam", "assalamualaikum", "assalam o alaikum", "as-salamu alaykum", "salam alaikum", "aoa", "slam", "slm", "walaikum assalam", "aoa sier", "aoa sir", "salam sir"]
     english_greetings = ["hi", "hello", "hey", "greetings", "hi there", "hello there", "hey there", "good morning", "good evening", "good afternoon", "hello anees", "hi anees", "hey anees", "howdy", "hiya", "hlo"]
-    if clean_greeting in islamic_greetings and len(request.history) == 0:
+    
+    if clean_msg in islamic_greetings:
         async def islamic_stream():
             msg = "Wa alaykumu s-salam! 👋 Great to connect! How can I assist you today?"
             yield f"data: {msg}\n\n"
             yield "data: [DONE]\n\n"
         return StreamingResponse(islamic_stream(), media_type="text/event-stream")
-    elif clean_greeting in english_greetings and len(request.history) == 0:
+    elif clean_msg in english_greetings:
         async def greeting_stream():
             msg = "Hello! 👋 Great to connect! How can I assist you today?"
             yield f"data: {msg}\n\n"
@@ -706,9 +707,10 @@ async def chat_stream_endpoint(request: ChatRequest, raw_request: Request):
         return StreamingResponse(greeting_stream(), media_type="text/event-stream")
 
     # ── Zero-Latency Profile Interceptors (Sub-Millisecond 0.001s Instant Stream) ──
-    clean_msg = _PUNCT_CLEAN_REGEX.sub(' ', request.message).strip().lower()
     name_queries = ["what is your name", "what s your name", "whats your name", "who are you", "tell me about yourself", "your name"]
-    capability_queries = ["what can you do", "what are your capabilities", "what do you do", "how can you help", "hello jay jay what can you do", "jay jay what can you do"]
+    capability_queries = ["what can you do", "what can you do?", "what are your capabilities", "what do you do", "how can you help", "hello jay jay what can you do", "jay jay what can you do"]
+    experience_queries = ["work experience", "work experience?", "experience", "experience?", "work", "job experience", "tell me your work experience"]
+    skills_queries = ["core skills", "what is your core skills", "what is your core skills?", "skills", "skills?", "strongest skills", "tech stack", "what are your skills"]
 
     if clean_msg in name_queries or (len(clean_msg) < 30 and any(nq == clean_msg for nq in name_queries)):
         async def name_stream():
@@ -723,6 +725,20 @@ async def chat_stream_endpoint(request: ChatRequest, raw_request: Request):
             yield f"data: {msg}\n\n"
             yield "data: [DONE]\n\n"
         return StreamingResponse(capability_stream(), media_type="text/event-stream")
+
+    if clean_msg in experience_queries:
+        async def experience_stream():
+            msg = "### 🚀 Work Experience\n\nI serve as a **Jr. AI Engineer** at **Techozon Software House** in Islamabad, Pakistan (Mar 2026 – Present), after completing my AI Engineer Internship.\n\nKey client products engineered:\n- **TourCheckNow:** Automated web scraping & pricing intelligence pipeline aggregating listings across 7+ cities (70-80% manual effort reduction).\n- **Shop & Bid:** AI product listing system combining Google Cloud Vision image recognition and Groq LLM description generation.\n- **Cedric Fitness:** Personalized diet planning & fitness tracking API backend for live mobile app.\n- **Super Calendar (JJ Voice Assistant):** Real-time Jarvis-style voice assistant powered by local STT/TTS (Faster-Whisper, Kokoro) and local Qwen 2.5-72B (Ollama)."
+            yield f"data: {msg}\n\n"
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(experience_stream(), media_type="text/event-stream")
+
+    if clean_msg in skills_queries:
+        async def skills_stream():
+            msg = "### ⚡ Core Technical Skills\n\n- **AI & Machine Learning:** ML, Deep Learning, Generative AI, LLMs, NLP, Prompt Engineering, Fine-Tuning, Hugging Face, Groq API\n- **Computer Vision:** PyTorch, TensorFlow, Keras, ANN, CNN, RNN, YOLOv11, OpenCV, MediaPipe, Object Detection\n- **Document Intelligence:** OCR, Document Intelligence, PDF/DOCX Parsing, Compliance & Scoring Pipelines\n- **RAG & Vector Retrieval:** RAG, Embeddings, Semantic Search, Vector DBs, FAISS\n- **Agentic AI:** AI Agents, Multi-Agent Systems, LangChain, LangGraph, CrewAI, MCP Server Development\n- **Backend & APIs:** Python, FastAPI, Flask, REST APIs, CRUD APIs, API Gateway Design\n- **MLOps & Quality:** Git, GitHub Actions CI/CD, Docker, pytest, mypy, Pylint"
+            yield f"data: {msg}\n\n"
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(skills_stream(), media_type="text/event-stream")
 
     # Dynamic RAG Retrieval
     start_t = time.time()
@@ -783,8 +799,9 @@ async def chat_stream_endpoint(request: ChatRequest, raw_request: Request):
         if not stream_success:
             logger.warning("Streaming fallback triggered. Generating dynamic RAG response.")
             top_content = rag_results[0].get("content", "") if rag_results else ""
-            top_title = rag_results[0].get("title", "Portfolio Knowledge") if rag_results else "Portfolio Knowledge"
-            fallback_text = f"### 📌 {top_title}\n\nI am Anees Munir Khokhar, an AI Engineer based in Islamabad. Here is the relevant summary from my profile:\n\n{top_content[:350]}...\n\nFeel free to ask more details about my projects, skills, or experience!"
+            raw_title = rag_results[0].get("title", "Portfolio Knowledge") if rag_results else "Portfolio Knowledge"
+            clean_title = raw_title.replace("FAQ:", "").replace("what_are_your_", "").replace("_", " ").strip().title()
+            fallback_text = f"### 📌 {clean_title}\n\nI am Anees Munir Khokhar, an AI Engineer based in Islamabad. Here is the relevant summary from my profile:\n\n{top_content[:350]}...\n\nFeel free to ask more details about my projects, skills, or experience!"
             escaped_fb = fallback_text.replace("\n", "\\n")
             yield f"data: {escaped_fb}\n\n"
             yield "data: [DONE]\n\n"
