@@ -34,7 +34,7 @@ class TestLocalRAGEngine(unittest.TestCase):
         results = self.engine.retrieve(query, top_k=1)
         self.assertTrue(len(results) > 0, "RAGEngine returned zero results for computer vision query.")
         top_chunk = results[0]
-        self.assertIn(top_chunk.get("chunk_id"), ["skills_mastery", "project_0", "project_1", "project_2", "project_3"], f"Retrieved unexpected chunk for CV skills: {top_chunk.get('chunk_id')}")
+        self.assertIn(top_chunk.get("chunk_id"), ["skills_mastery", "project_0", "project_1", "project_2", "project_3", "project_4"], f"Retrieved unexpected chunk for CV skills: {top_chunk.get('chunk_id')}")
 
     def test_token_footprint_reduction(self):
         """Assert that dynamic RAG injection reduces system prompt character length significantly versus full static JSON dump."""

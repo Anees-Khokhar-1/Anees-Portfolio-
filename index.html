@@ -7,9 +7,13 @@
   <title>Anees Munir Khokhar | AI Engineer</title>
   <meta name="description" content="Anees Munir Khokhar — AI Engineer building production-grade agentic AI systems, RAG pipelines, intelligent APIs, and computer vision products." />
   <meta name="author" content="Anees Munir Khokhar" />
-  <meta name="keywords" content="Anees Munir Khokhar, AI Engineer, RAG, Agentic AI, Computer Vision, Python, FastAPI, Islamabad, Pakistan, AI Portfolio" />
+  <meta name="keywords" content="Anees Munir Khokhar, AI Engineer, RAG, Agentic AI, BidOS, SOL Voice Assistant, Document Intelligence, Computer Vision, Python, FastAPI, Islamabad, Pakistan, AI Portfolio" />
+  <meta name="geo.region" content="PK-IS" />
+  <meta name="geo.placename" content="Islamabad, Pakistan" />
+  <meta name="geo.position" content="33.6844;73.0479" />
+  <meta name="ICBM" content="33.6844, 73.0479" />
   <meta property="og:title" content="Anees Munir Khokhar | AI Engineer" />
-  <meta property="og:description" content="AI Engineer — Agentic AI, RAG, Computer Vision, Backend APIs" />
+  <meta property="og:description" content="AI Engineer — Agentic AI, RAG, Document Intelligence, Computer Vision, Backend APIs" />
   <meta property="og:image" content="https://aneesportfolio.com/assets/avatar.png" />
   <meta property="og:url" content="https://aneesportfolio.com/" />
   <meta property="og:type" content="website" />
@@ -47,7 +51,7 @@
         },
         "knowsAbout": [
           "Artificial Intelligence", "Agentic AI Workflows", "Retrieval-Augmented Generation (RAG)",
-          "Computer Vision", "YOLOv11", "FastAPI", "Python", "FAISS Vector Search", "LangChain", "Docker"
+          "Document Intelligence", "OCR", "Voice AI", "Computer Vision", "YOLOv11", "FastAPI", "Python", "FAISS Vector Search", "LangChain", "Docker"
         ],
         "sameAs": [
           "https://github.com/Anees-Khokhar-1",
@@ -82,9 +86,9 @@
             "position": 2,
             "item": {
               "@type": "SoftwareSourceCode",
-              "name": "Diet AI — YOLOv11 Calorie Estimation & Nutrition Tracker",
-              "description": "Real-time computer vision nutrition tracker using fine-tuned YOLOv11 and FastAPI edge inference.",
-              "programmingLanguage": ["Python", "YOLOv11", "PyTorch", "FastAPI"],
+              "name": "BidOS — AI-Powered Bid & Proposal Response Engine",
+              "description": "Full backend system turning RFP/RFQ tender documents into controlled bid workspaces using OCR, REST API gateway (/api/v1), and win-probability scoring.",
+              "programmingLanguage": ["Python", "FastAPI", "Groq LLM", "SQLite", "OCR"],
               "author": { "@id": "https://aneesportfolio.com/#person" }
             }
           },
@@ -93,15 +97,26 @@
             "position": 3,
             "item": {
               "@type": "SoftwareSourceCode",
-              "name": "Graviton AI — Coding IDE Agent & Autonomous Software Engineer",
-              "description": "Next-gen VS Code agentic AI coding extension capable of autonomous multi-file planning and execution.",
-              "programmingLanguage": ["Python", "TypeScript", "Agentic Workflows"],
+              "name": "SOL — Multimodal Agentic AI Desktop Assistant",
+              "description": "Voice-first multimodal AI assistant with realtime STT/TTS via Google Gemini Live, screen/camera vision, autonomous planner-executor, and MCP registry.",
+              "programmingLanguage": ["Python", "PyQt6", "Gemini Live", "WebSockets"],
               "author": { "@id": "https://aneesportfolio.com/#person" }
             }
           },
           {
             "@type": "ListItem",
             "position": 4,
+            "item": {
+              "@type": "SoftwareSourceCode",
+              "name": "Smart Garbage Detection System",
+              "description": "Real-time computer vision system using YOLOv11 and OpenCV for automated waste classification.",
+              "programmingLanguage": ["Python", "YOLOv11", "OpenCV", "PyTorch"],
+              "author": { "@id": "https://aneesportfolio.com/#person" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
             "item": {
               "@type": "Dataset",
               "name": "100-Class Fruit Dataset — YOLOv11 Computer Vision Pipeline",
@@ -391,15 +406,7 @@
             <p class="tl-desc">Worked across LLMs, machine learning, computer vision, analytics, generative AI, OpenCV, YOLOv11, and production-focused AI systems.</p>
           </div>
         </div>
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="tl-card">
-            <div class="tl-head"><strong>Assistant Store Manager</strong><span class="tl-date">Mar 2021 – Aug 2023</span></div>
-            <p class="tl-company">Habib Rafiq Pvt. Ltd.</p>
-            <p class="tl-desc">Managed daily operations, supervised 12+ staff members, and improved workflow efficiency.</p>
-          </div>
         </div>
-      </div>
     </div>
   </template>
 
@@ -441,6 +448,70 @@
 
             <div class="proj-tags"><span>FastAPI</span><span>LangChain</span><span>FAISS</span><span>Hugging Face</span><span>Ollama</span><span>GitHub Actions</span><span>RAG</span><span>Vector Databases</span></div>
             <a href="https://github.com/Anees-Khokhar-1/Easy-Study" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+          </div>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-banner">
+            <img src="assets/bidos_preview.jpg" alt="BidOS AI Response Engine" loading="lazy" />
+            <span class="proj-badge badge-rag">Document Intelligence</span>
+          </div>
+          <div class="proj-content">
+            <h4>BidOS — AI Bid & Proposal Response Engine</h4>
+            <p class="proj-desc">A full backend system turning RFP/RFQ/tender documents (PDF/DOCX) into a controlled bid review workspace using OCR and Document Intelligence extraction. Features a versioned REST API gateway (/api/v1) with 15+ endpoints and explainable compliance scoring.</p>
+
+            <div class="metric-row">
+              <span class="metric-badge">⚡ 15+ API Gateway Endpoints</span>
+              <span class="metric-badge">📄 OCR & Doc Extraction</span>
+              <span class="metric-badge">🎯 Win-Probability Scoring</span>
+            </div>
+
+            <div class="arch-flow" aria-label="BidOS Architecture">
+              <span class="arch-node">📄 RFP / Tender</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node primary">OCR & Extraction</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node accent">API Gateway (/api/v1)</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node dark">Groq LLM Engine</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node">📊 Win Score</span>
+            </div>
+
+            <div class="proj-tags"><span>FastAPI</span><span>Groq LLM</span><span>Python</span><span>SQLite</span><span>REST API</span><span>OCR</span></div>
+            <a href="https://github.com/Anees-Khokhar-1/AI-Powered-Bid-Proposal-Response-Engine-" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
+          </div>
+        </article>
+
+        <article class="proj-card">
+          <div class="proj-banner">
+            <img src="assets/sol_preview.jpg" alt="SOL Multimodal Agentic AI" loading="lazy" />
+            <span class="proj-badge badge-gen">Agentic AI & Multimodal</span>
+          </div>
+          <div class="proj-content">
+            <h4>SOL — Multimodal Agentic AI Desktop Assistant</h4>
+            <p class="proj-desc">A voice-first multimodal AI desktop assistant with realtime STT/TTS via Google Gemini Live using WebSocket-based streaming, screen/camera vision, autonomous planner-executor engine, and governed MCP capability registry.</p>
+
+            <div class="metric-row">
+              <span class="metric-badge">🎙️ Gemini Live STT/TTS</span>
+              <span class="metric-badge">📷 Screen & Camera Vision</span>
+              <span class="metric-badge">⚙️ Governed MCP Registry</span>
+            </div>
+
+            <div class="arch-flow" aria-label="SOL Architecture">
+              <span class="arch-node">🎙️ Voice / Camera</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node primary">Gemini Live Stream</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node accent">PyQt6 Desktop UI</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node dark">Planner → Executor</span>
+              <span class="arch-arrow">→</span>
+              <span class="arch-node">⚙️ MCP Tool Execution</span>
+            </div>
+
+            <div class="proj-tags"><span>Python</span><span>PyQt6</span><span>Gemini Live</span><span>STT/TTS</span><span>WebSockets</span><span>Agentic AI</span></div>
+            <a href="https://github.com/Anees-Khokhar-1/SOL" target="_blank" rel="noopener noreferrer" class="btn-sm btn-dark">GitHub ↗</a>
           </div>
         </article>
 
@@ -658,6 +729,28 @@
           <div class="sk-content">
             <div class="sk-head"><span class="sk-emoji">📊</span><h4>Data Engineering</h4></div>
             <div class="sk-tags"><span>Dataset Creation</span><span>Dataset Cleaning</span><span>Web Scraping</span><span>XHR Scraping</span><span>Pandas</span><span>Data Preprocessing</span><span>Structured Data Collection</span></div>
+          </div>
+        </div>
+
+        <div class="sk-card sk-data">
+          <div class="sk-banner">
+            <img src="https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80" alt="Document Intelligence" loading="lazy" />
+            <span class="sk-tag tag-core">Core</span>
+          </div>
+          <div class="sk-content">
+            <div class="sk-head"><span class="sk-emoji">📄</span><h4>Document Intelligence</h4></div>
+            <div class="sk-tags"><span>OCR</span><span>Document Intelligence</span><span>PDF/DOCX Parsing</span><span>Compliance & Scoring Pipelines</span><span>Data Extraction</span><span>Requirement Extraction</span></div>
+          </div>
+        </div>
+
+        <div class="sk-card sk-gen">
+          <div class="sk-banner">
+            <img src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=600&q=80" alt="Voice & Multimodal AI" loading="lazy" />
+            <span class="sk-tag tag-core">Core</span>
+          </div>
+          <div class="sk-content">
+            <div class="sk-head"><span class="sk-emoji">🎙️</span><h4>Voice & Multimodal AI</h4></div>
+            <div class="sk-tags"><span>Speech-to-Text (STT)</span><span>Text-to-Speech (TTS)</span><span>Realtime Audio Streaming</span><span>WebSockets</span><span>Google Gemini Live API</span><span>Faster-Whisper</span><span>Kokoro-82M</span></div>
           </div>
         </div>
 

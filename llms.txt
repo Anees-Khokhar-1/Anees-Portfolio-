@@ -11,6 +11,8 @@
 
 ## Key Flagship Projects
 - **Easy-Study:** Multi-Model Study Assistant & RAG Platform (FastAPI + LangChain + FAISS + Multi-LLM Routing). URL: https://github.com/Anees-Khokhar-1/Easy-Study
+- **BidOS:** AI-Powered Bid & Proposal Response Engine (FastAPI + Document Intelligence + OCR + REST Gateway). URL: https://github.com/Anees-Khokhar-1/AI-Powered-Bid-Proposal-Response-Engine-
+- **SOL:** Voice-first Multimodal Agentic AI Desktop Assistant (Gemini Live + Screen/Camera Vision + MCP Registry). URL: https://github.com/Anees-Khokhar-1/SOL
 - **Smart Garbage Detection System:** Real-Time YOLOv11 computer vision waste classification system. URL: https://github.com/Anees-Khokhar-1/Smart-Garbage-Detection
 - **AI Products Description Generator:** Generative AI e-commerce description generator. URL: https://github.com/Anees-Khokhar-1/AI-Products-Description-Generator
 - **Tourist LLM:** Conversational RAG travel planning assistant. URL: https://github.com/Anees-Khokhar-1/Tourist-llm-

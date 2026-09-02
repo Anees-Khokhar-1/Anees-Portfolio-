@@ -44,8 +44,19 @@
   },
   "privacy_rules": {
     "do_not_reveal_private_fields": true,
-    "private_fields": ["phone", "father_name", "exact_residential_street_address", "national_id"],
-    "permitted_professional_disclosures": ["dob", "age", "current_address", "permanent_address", "education"],
+    "private_fields": [
+      "phone",
+      "father_name",
+      "exact_residential_street_address",
+      "national_id"
+    ],
+    "permitted_professional_disclosures": [
+      "dob",
+      "age",
+      "current_address",
+      "permanent_address",
+      "education"
+    ],
     "safe_contact_method": "Use email (aneesmunir1020@gmail.com), LinkedIn, or GitHub for professional contact."
   },
   "dynamic_fields": {
@@ -109,33 +120,104 @@
     ]
   },
   "skills": {
-    "Agentic AI & Orchestration": ["Multi-Agent Workflows", "Agentic AI Architecture", "LangGraph Orchestration", "CrewAI", "MCP Server Development", "AI Agents", "Agent Tool Integration"],
-    "Generative AI & LLMs": ["LLM Applications", "RAG", "Prompt Engineering", "Fine-Tuning", "Hugging Face Transformers", "Gemini", "OpenRouter", "Ollama", "OpenAI", "Multi-provider LLM Workflows"],
-    "Deep Learning": ["ANN", "CNN", "RNN", "Transformers", "PyTorch", "TensorFlow", "Keras", "Model Training", "Model Evaluation"],
-    "Computer Vision": ["YOLOv11", "OpenCV", "MediaPipe", "Real-time Inference", "Object Detection", "Image Classification", "CV Dataset Creation"],
-    "Backend & APIs": ["REST APIs", "FastAPI", "Flask", "CRUD Design", "API Integration", "Backend Architecture", "Full-Stack Development"],
-    "Databases & Retrieval": ["PostgreSQL", "MongoDB", "SQL", "NoSQL", "SQLite", "FAISS", "Vector Databases", "Semantic Search", "Embedding Pipelines"],
-    "Data Engineering": ["Dataset Creation", "Web Scraping", "XHR Scraping", "Pandas", "Data Preprocessing"],
-    "DevOps & Quality": ["Git", "GitHub Actions", "CI/CD", "pytest", "mypy", "Bandit", "Pylint", "Testing", "Deployment"]
+    "Agentic AI & Orchestration": [
+      "Multi-Agent Workflows",
+      "Agentic AI Architecture",
+      "LangGraph Orchestration",
+      "CrewAI",
+      "MCP Server Development",
+      "AI Agents",
+      "Agent Tool Integration"
+    ],
+    "Generative AI & LLMs": [
+      "LLM Applications",
+      "RAG",
+      "Prompt Engineering",
+      "Fine-Tuning",
+      "Hugging Face Transformers",
+      "Gemini",
+      "OpenRouter",
+      "Ollama",
+      "OpenAI",
+      "Multi-provider LLM Workflows"
+    ],
+    "Deep Learning": [
+      "ANN",
+      "CNN",
+      "RNN",
+      "Transformers",
+      "PyTorch",
+      "TensorFlow",
+      "Keras",
+      "Model Training",
+      "Model Evaluation"
+    ],
+    "Computer Vision": [
+      "YOLOv11",
+      "OpenCV",
+      "MediaPipe",
+      "Real-time Inference",
+      "Object Detection",
+      "Image Classification",
+      "CV Dataset Creation"
+    ],
+    "Backend & APIs": [
+      "REST APIs",
+      "FastAPI",
+      "Flask",
+      "CRUD Design",
+      "API Integration",
+      "Backend Architecture",
+      "Full-Stack Development"
+    ],
+    "Databases & Retrieval": [
+      "PostgreSQL",
+      "MongoDB",
+      "SQL",
+      "NoSQL",
+      "SQLite",
+      "FAISS",
+      "Vector Databases",
+      "Semantic Search",
+      "Embedding Pipelines"
+    ],
+    "Data Engineering": [
+      "Dataset Creation",
+      "Web Scraping",
+      "XHR Scraping",
+      "Pandas",
+      "Data Preprocessing"
+    ],
+    "DevOps & Quality": [
+      "Git",
+      "GitHub Actions",
+      "CI/CD",
+      "pytest",
+      "mypy",
+      "Bandit",
+      "Pylint",
+      "Testing",
+      "Deployment"
+    ]
   },
   "experience": [
     {
       "title": "Jr. AI Engineer",
-      "company": "Techozon Software House",
+      "company": "Techozon Software House (Islamabad, Pakistan)",
       "period": "Mar 2026 – Present",
-      "description": "Building LLM applications, AI agents, production agentic systems, REST APIs, databases, vector databases, computer vision datasets, model integration, testing, and deployment."
+      "description": "Building end-to-end AI/ML applications across data engineering, generative AI, computer vision, and voice AI for multiple client products.",
+      "client_products": {
+        "TourCheckNow": "Built an automated web scraping & data pipeline aggregating pricing from 3+ travel providers (Booking.com, Headout, Groupon) across 7+ cities, categorizing 5,000+ listings with OpenAI GPT-generated descriptions (70-80% manual effort reduction).",
+        "Shop and Bid": "AI product listing system with Google Cloud Vision image identification, Groq LLM description generation, and real-time marketplace price comparison (Amazon, Alibaba, Walmart).",
+        "Cedric Fitness": "Personalized, allergy-aware diet planning and fitness progress tracking for live mobile app with FastAPI backend and structured API gateway architecture.",
+        "Super Calendar (JJ Voice Assistant)": "Jarvis-style real-time voice assistant with local STT/TTS (Faster-Whisper, Kokoro), local Qwen 2.5-72B (Ollama), WebSockets streaming, and barge-in interruption support."
+      }
     },
     {
       "title": "AI Engineer Intern",
-      "company": "Techozon Software House",
+      "company": "Techozon Software House (Islamabad, Pakistan)",
       "period": "Jan 2026 – Feb 2026",
-      "description": "Worked across LLMs, machine learning, computer vision, analytics, generative AI, OpenCV, YOLOv11, and production-focused AI systems."
-    },
-    {
-      "title": "Assistant Store Manager",
-      "company": "Habib Rafiq Pvt. Ltd.",
-      "period": "Mar 2021 – Aug 2023",
-      "description": "Managed daily operations, supervised 12+ staff members, and improved workflow efficiency."
+      "description": "Worked across LLMs, RAG concepts, machine learning scripts, OpenCV, YOLOv11, TensorFlow, and Keras practical AI prototypes."
     }
   ],
   "projects": [
@@ -150,7 +232,12 @@
         "orchestration": "LangChain",
         "embedding": "Hugging Face embeddings",
         "vector_store": "FAISS",
-        "llm_providers": ["Gemini", "OpenRouter", "Ollama", "OpenAI"],
+        "llm_providers": [
+          "Gemini",
+          "OpenRouter",
+          "Ollama",
+          "OpenAI"
+        ],
         "deployment": "GitHub Actions-based workflow"
       },
       "features": [
@@ -168,8 +255,75 @@
         "Supporting multiple LLM providers"
       ],
       "impact": "Demonstrates practical RAG engineering, modular LLM integration, and production-style backend design.",
-      "tech": ["FastAPI", "LangChain", "FAISS", "Hugging Face", "Ollama", "GitHub Actions", "RAG", "Vector Databases"],
+      "tech": [
+        "FastAPI",
+        "LangChain",
+        "FAISS",
+        "Hugging Face",
+        "Ollama",
+        "GitHub Actions",
+        "RAG",
+        "Vector Databases"
+      ],
       "github": "https://github.com/Anees-Khokhar-1/Easy-Study"
+    },
+    {
+      "name": "BidOS — AI-Powered Bid & Proposal Response Engine",
+      "type": "Document Intelligence & Bid Automation",
+      "category": "Document Intelligence",
+      "problem": "Sales and procurement teams need an automated backend system to turn complex RFP/RFQ/tender documents (PDF/DOCX) into structured, compliant bid workspaces.",
+      "my_role": "Engineered the versioned REST API gateway (/api/v1) with 15+ endpoints, document extraction pipeline, compliance scoring engine, and audit trail.",
+      "architecture": {
+        "backend": "FastAPI / REST API Gateway (/api/v1)",
+        "extraction": "OCR & Document Intelligence parsing (PDF/DOCX)",
+        "ai_engine": "Groq LLM API with deterministic local fallbacks",
+        "scoring": "Explainable win-probability scoring with requirement-level provenance"
+      },
+      "features": [
+        "RFP/RFQ/Tender document parsing",
+        "15+ REST API gateway endpoints",
+        "Explainable compliance & win-probability scoring",
+        "Audit trail & provenance tracking"
+      ],
+      "impact": "Accelerates proposal turnaround time and improves bid compliance accuracy.",
+      "tech": [
+        "FastAPI",
+        "Groq LLM",
+        "Python",
+        "SQLite",
+        "REST API",
+        "OCR"
+      ],
+      "github": "https://github.com/Anees-Khokhar-1/AI-Powered-Bid-Proposal-Response-Engine-"
+    },
+    {
+      "name": "SOL — Multimodal Agentic AI Desktop Assistant",
+      "type": "Multimodal Agentic AI Assistant",
+      "category": "Agentic AI & Multimodal",
+      "problem": "Users need an autonomous, voice-first desktop assistant that can perform multi-step workflows across screen/camera vision and desktop applications.",
+      "my_role": "Architected the voice-first streaming pipeline via Google Gemini Live, autonomous planner-executor execution engine, and governed MCP capability registry.",
+      "architecture": {
+        "frontend": "PyQt6 Desktop UI",
+        "streaming": "Google Gemini Live WebSocket STT/TTS",
+        "execution_engine": "Autonomous planner → executor → task queue",
+        "capability_registry": "Governed MCP-style tool orchestration with permission gating"
+      },
+      "features": [
+        "Realtime STT/TTS streaming via Gemini Live",
+        "Screen and camera vision integration",
+        "Autonomous multi-step planning and task queue execution",
+        "MCP tool orchestration with permission-based gating"
+      ],
+      "impact": "Delivers real-time multimodal desktop automation with governed agentic safety.",
+      "tech": [
+        "Python",
+        "PyQt6",
+        "Gemini Live",
+        "STT/TTS",
+        "WebSockets",
+        "Agentic AI"
+      ],
+      "github": "https://github.com/Anees-Khokhar-1/SOL"
     },
     {
       "name": "AI Products Description Generator",
@@ -194,7 +348,12 @@
         "Optimizing latency for bulk generation"
       ],
       "impact": "Drastically reduces e-commerce content creation time while maintaining high copywriting standards.",
-      "tech": ["Python", "LLMs", "Prompt Engineering", "REST APIs"],
+      "tech": [
+        "Python",
+        "LLMs",
+        "Prompt Engineering",
+        "REST APIs"
+      ],
       "github": "https://github.com/Anees-Khokhar-1/AI-Products-Description-Generator"
     },
     {
@@ -218,7 +377,12 @@
         "Balancing detection FPS with accuracy on edge devices"
       ],
       "impact": "Provides automated, high-precision visual monitoring for smart city waste management.",
-      "tech": ["YOLOv11", "OpenCV", "Computer Vision", "Dataset Engineering"],
+      "tech": [
+        "YOLOv11",
+        "OpenCV",
+        "Computer Vision",
+        "Dataset Engineering"
+      ],
       "github": "https://github.com/Anees-Khokhar-1/Smart-Garbage-Detection"
     },
     {
@@ -241,7 +405,11 @@
         "Filtering outdated travel details"
       ],
       "impact": "Delivers intuitive, responsive AI travel assistance tailored to user preferences.",
-      "tech": ["LLMs", "Python", "RAG"],
+      "tech": [
+        "LLMs",
+        "Python",
+        "RAG"
+      ],
       "github": "https://github.com/Anees-Khokhar-1/Tourist-llm-"
     },
     {
@@ -265,7 +433,11 @@
         "Designing intuitive error boundaries and fallbacks"
       ],
       "impact": "Demonstrates clean chat product design and robust end-to-end AI feature delivery.",
-      "tech": ["AI Chat", "Python", "LLMs"],
+      "tech": [
+        "AI Chat",
+        "Python",
+        "LLMs"
+      ],
       "github": "https://github.com/Anees-Khokhar-1/ConVochaT"
     },
     {
@@ -288,7 +460,12 @@
         "Structuring nested JSON responses into clean relational tables"
       ],
       "impact": "Achieved 10x faster scraping speeds compared to browser automation while reducing server load.",
-      "tech": ["Web Scraping", "XHR", "Data Engineering", "Pandas"],
+      "tech": [
+        "Web Scraping",
+        "XHR",
+        "Data Engineering",
+        "Pandas"
+      ],
       "github": "https://github.com/Anees-Khokhar-1/Headout_XHR-Scrapping-"
     },
     {
@@ -312,7 +489,12 @@
         "Creating responsive UX for quick daily data entry"
       ],
       "impact": "Provides a reliable, clean CRUD foundation demonstrating solid software engineering principles.",
-      "tech": ["Full Stack", "CRUD", "Database", "Python"],
+      "tech": [
+        "Full Stack",
+        "CRUD",
+        "Database",
+        "Python"
+      ],
       "github": "https://github.com/Anees-Khokhar-1/Personal-Expense-Tracker"
     },
     {
@@ -334,7 +516,11 @@
         "Tuning prompts to guide students toward learning rather than just giving direct answers"
       ],
       "impact": "Enhances student productivity and learning comprehension through tailored AI mentorship.",
-      "tech": ["AI Assistant", "Python", "LLMs"],
+      "tech": [
+        "AI Assistant",
+        "Python",
+        "LLMs"
+      ],
       "github": "https://github.com/Anees-Khokhar-1/ai-study-assistant"
     },
     {
@@ -358,24 +544,32 @@
         "Optimizing convolutional layers for feature extraction"
       ],
       "impact": "Demonstrates solid computer vision and deep learning fundamentals applied to agricultural automation.",
-      "tech": ["TensorFlow", "Keras", "CNN", "Deep Learning"],
+      "tech": [
+        "TensorFlow",
+        "Keras",
+        "CNN",
+        "Deep Learning"
+      ],
       "github": "https://github.com/Anees-Khokhar-1/fruitclassification"
     }
   ],
   "ranking_rules": {
     "flagship_project": "Easy-Study",
     "best_rag_project": "Easy-Study",
-    "best_llm_project": "Easy-Study",
+    "best_document_intelligence_project": "BidOS",
+    "best_agentic_voice_project": "SOL",
     "best_computer_vision_project": "Smart Garbage Detection System",
     "best_deep_learning_project": "Fruit Classification System",
     "best_data_engineering_project": "Headout XHR Scraping",
     "best_full_stack_project": "Personal Expense Tracker"
   },
   "portfolio_summary": {
-    "total_projects_count": 8,
-    "overview_statement": "I have developed 8 major production projects spanning RAG systems, Computer Vision, Deep Learning, Generative AI, Data Scraping, and Full-Stack CRUD applications.",
+    "total_projects_count": 10,
+    "overview_statement": "I have developed 10 major production-grade projects spanning RAG systems, Document Intelligence, Multimodal Agentic AI, Computer Vision, Deep Learning, Generative AI, Data Scraping, and Full-Stack CRUD applications.",
     "all_projects_by_category": {
-      "Flagship RAG & Study Assistant": "Easy-Study (#1 Flagship RAG Assistant for PDFs, YouTube, web articles, notes via FAISS & FastAPI)",
+      "Flagship RAG & Study Assistant": "Easy-Study (Flagship RAG Assistant for PDFs, YouTube, web articles, notes via FAISS & FastAPI)",
+      "Document Intelligence & Bid Automation": "BidOS (AI-Powered Bid & Proposal Response Engine with OCR, 15+ REST API gateway endpoints, and win-probability scoring)",
+      "Multimodal Agentic AI Assistant": "SOL (Voice-first multimodal AI desktop assistant via Google Gemini Live, screen/camera vision, and MCP tool registry)",
       "Computer Vision & Edge AI": "Smart Garbage Detection System (Real-time waste detection using YOLOv11 & OpenCV)",
       "Generative AI & Copywriting": "AI Products Description Generator (Automated e-commerce copywriting with custom LLM prompts)",
       "Deep Learning & Vision": "Fruit Classification System (CNN quality grading with PyTorch & TensorFlow)",
@@ -404,9 +598,12 @@
     }
   },
   "sample_answers": {
-    "tell_me_about_yourself": "I am Anees Munir Khokhar, an AI Engineer based in Islamabad, specializing in production-grade RAG pipelines, agentic AI workflows, and computer vision systems. Holding a BS in Artificial Intelligence from UAJK, I bridge the gap between complex AI research architectures and scalable, high-concurrency production applications. Whether designing multi-provider retrieval engines like Easy-Study or containerized microservices, my focus is always on engineering precision, automated testing, and real-world impact.",
+    "tell_me_about_yourself": "I am Anees Munir Khokhar, an AI Engineer based in Islamabad, specializing in production-grade RAG pipelines, agentic AI workflows, Document Intelligence, and computer vision systems. Holding a BS in Artificial Intelligence from UAJK, I bridge the gap between complex AI research architectures and scalable, high-concurrency production applications. Whether designing multi-provider retrieval engines like Easy-Study, document intelligence response engines like BidOS, or voice assistants like SOL, my focus is always on engineering precision, automated testing, and real-world impact.",
     "why_should_we_hire_you": "You should hire me because I combine AI engineering with backend development and practical product-building skills. I can work on LLM apps, RAG pipelines, AI agents, APIs, databases, testing, and deployment. My focus is not just building prototypes, but creating usable and maintainable AI systems.",
     "explain_easy_study": "Easy-Study is my flagship RAG project. It can ingest PDFs, YouTube videos, web articles, and notes, convert them into embeddings, store them in a FAISS vector database, and answer questions using different LLM providers like Gemini, OpenRouter, Ollama, and OpenAI. I designed it to be modular, practical, and useful for students.",
+    "explain_bidos": "BidOS is my AI-powered Bid & Proposal Response Engine. I built the full backend system turning RFP/RFQ/tender documents (PDF/DOCX) into a controlled bid review workspace using OCR and Document Intelligence extraction. It features a versioned REST API gateway (/api/v1) with 15+ endpoints, requirement-level provenance, an explainable win-probability scoring engine, and live Groq LLM integration with local fallbacks.",
+    "explain_sol": "SOL is my voice-first Multimodal Agentic AI Desktop Assistant. I architected the real-time STT/TTS audio streaming pipeline via Google Gemini Live using WebSockets, integrated screen and camera vision, designed an autonomous planner-executor execution engine, and built a governed MCP capability registry with permission-based execution gating.",
+    "explain_techozon_experience": "At Techozon Software House as a Jr. AI Engineer, I built end-to-end AI/ML applications across multiple client products: TourCheckNow (automated web scraping & pricing data pipeline across 7+ cities), Shop and Bid (AI product listing & price comparison with Google Cloud Vision and Groq), Cedric Fitness (diet planning & fitness tracking for a live mobile app), and Super Calendar / JJ Voice Assistant (a real-time Jarvis voice assistant using Faster-Whisper, Kokoro, and Qwen 2.5-72B).",
     "salary_expectation": "I’m open to discussing compensation based on the role, responsibilities, location, and overall opportunity. I prefer to discuss salary details directly during the recruitment process."
   },
   "accuracy_rules": {
@@ -481,10 +678,42 @@
     ]
   },
   "intent_routing": {
-    "recruiter_intent": ["hire", "job", "role", "resume", "experience", "availability", "relocation", "salary"],
-    "client_intent": ["project", "build", "cost", "timeline", "automation", "AI chatbot", "RAG app"],
-    "technical_intent": ["architecture", "stack", "implementation", "RAG", "API", "model", "database"],
-    "personal_intent": ["family", "religion", "politics", "private life", "address", "phone"]
+    "recruiter_intent": [
+      "hire",
+      "job",
+      "role",
+      "resume",
+      "experience",
+      "availability",
+      "relocation",
+      "salary"
+    ],
+    "client_intent": [
+      "project",
+      "build",
+      "cost",
+      "timeline",
+      "automation",
+      "AI chatbot",
+      "RAG app"
+    ],
+    "technical_intent": [
+      "architecture",
+      "stack",
+      "implementation",
+      "RAG",
+      "API",
+      "model",
+      "database"
+    ],
+    "personal_intent": [
+      "family",
+      "religion",
+      "politics",
+      "private life",
+      "address",
+      "phone"
+    ]
   },
   "intent_behavior": {
     "recruiter_intent": "Highlight skills, experience, availability, and hiring fit.",
@@ -509,7 +738,16 @@
     "I combine AI engineering with backend APIs and databases.",
     "I focus on production-ready workflows, testing, and deployment."
   ],
-  "hobbies": ["Badminton", "Gardening", "Reading AI articles", "Coding", "Cooking", "Exploring AI news", "Family conversations", "Traveling & Hiking"],
+  "hobbies": [
+    "Badminton",
+    "Gardening",
+    "Reading AI articles",
+    "Coding",
+    "Cooking",
+    "Exploring AI news",
+    "Family conversations",
+    "Traveling & Hiking"
+  ],
   "evaluation_questions": [
     "Tell me about yourself.",
     "Why should we hire you?",

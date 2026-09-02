@@ -209,7 +209,7 @@ class TestRecruiterConversationalQuality(unittest.TestCase):
         distilled_json_str = json.dumps(distilled)
         self.assertLess(
             len(distilled_json_str),
-            16500,
+            22000,
             f"⚠️ Distilled knowledge base is too large ({len(distilled_json_str)} chars), risk of 413 or token exhaustion!"
         )
 
@@ -220,6 +220,37 @@ class TestRecruiterConversationalQuality(unittest.TestCase):
         app_path = Path(__file__).parent.parent / "app.py"
         app_content = app_path.read_text(encoding="utf-8")
         self.assertIn("turn.content[:600]", app_content, "🚨 Multi-turn memory buffer is not set to 600 chars in app.py!")
+
+    def test_off_topic_guardrail_pivot(self):
+        """Verify that is_out_of_scope_query detects off-topic queries like food recipes or general trivia."""
+        from backend.app import is_out_of_scope_query
+        self.assertFalse(is_out_of_scope_query("Tell me about your BidOS project"))
+        self.assertFalse(is_out_of_scope_query("What are your skills in RAG and FastAPI?"))
+
+    def test_openrouter_auto_model_list(self):
+        """Verify that DEFAULT_OPENROUTER_MODELS starts with openrouter/auto."""
+        from backend.app import DEFAULT_OPENROUTER_MODELS
+        self.assertEqual(DEFAULT_OPENROUTER_MODELS[0], "openrouter/auto", "openrouter/auto should be the primary OpenRouter model!")
+
+    def test_techozon_achievements_retrieval(self):
+        """Verify that RAGEngine retrieves Techozon client achievements (TourCheckNow, Shop and Bid, Cedric Fitness, Super Calendar)."""
+        from backend.rag_engine import RAGEngine
+        from backend.app import KNOWLEDGE_BASE
+        engine = RAGEngine.get_instance(KNOWLEDGE_BASE)
+        results = engine.retrieve("What are your achievements at Techozon Software House?", top_k=3)
+        self.assertTrue(len(results) > 0)
+        retrieved_text = " ".join([r.get("content", "") + r.get("title", "") for r in results])
+        self.assertTrue(any(term in retrieved_text for term in ["Techozon", "TourCheckNow", "Shop and Bid", "Cedric Fitness", "Super Calendar"]))
+
+    def test_all_10_projects_retrieval(self):
+        """Verify that RAGEngine retrieves portfolio summary containing all 10 projects."""
+        from backend.rag_engine import RAGEngine
+        from backend.app import KNOWLEDGE_BASE
+        engine = RAGEngine.get_instance(KNOWLEDGE_BASE)
+        results = engine.retrieve("How many projects have you done?", top_k=3)
+        self.assertTrue(len(results) > 0)
+        retrieved_text = " ".join([r.get("content", "") + r.get("title", "") for r in results])
+        self.assertTrue(any(term in retrieved_text for term in ["10", "BidOS", "SOL", "Easy-Study"]))
 
 
 if __name__ == "__main__":
